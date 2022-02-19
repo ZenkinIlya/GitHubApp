@@ -12,20 +12,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
+        android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@id/sign_in_without_auth"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.google.android.gms.common.SignInButton
-        android:id="@+id/sign_in_by_google"
+        android:id="@+id/sign_in_google"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/sign_in_by_github"
+        app:layout_constraintBottom_toTopOf="@id/sign_in_github"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
-        android:id="@+id/sign_in_by_github"
+        android:id="@+id/sign_in_github"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -38,7 +39,7 @@
         android:id="@+id/sign_in_without_auth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/sign_in_by_github"
+        app:layout_constraintTop_toBottomOf="@id/sign_in_github"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/sign_in_without_auth"/>

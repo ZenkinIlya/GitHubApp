@@ -12,13 +12,14 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 
 
-class SignInByGoogleContract: ActivityResultContract<GoogleSignInClient, GoogleSignInAccount?>() {
+class SignInGoogleContract: ActivityResultContract<GoogleSignInClient, GoogleSignInAccount?>() {
 
     override fun createIntent(context: Context, input: GoogleSignInClient): Intent {
         return input.signInIntent
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): GoogleSignInAccount? {
+        Log.i(TAG, "resultCode = $resultCode")
         if (intent == null) return null
         if (resultCode != Activity.RESULT_OK) return null
 
@@ -38,7 +39,7 @@ class SignInByGoogleContract: ActivityResultContract<GoogleSignInClient, GoogleS
     }
 
     companion object{
-        const val TAG = "SignInByGoogleContractTAG"
+        const val TAG = "SignInGoogleContractTAG"
     }
 
 }
