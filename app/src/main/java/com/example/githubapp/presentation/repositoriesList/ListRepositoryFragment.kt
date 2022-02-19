@@ -5,9 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
 import androidx.navigation.fragment.navArgs
+import com.example.githubapp.R
 import com.example.githubapp.databinding.FragmentListRepositoryBinding
 
-class ListRepositoryFragment : Fragment() {
+class ListRepositoryFragment : Fragment(R.layout.fragment_list_repository) {
 
     private lateinit var binding: FragmentListRepositoryBinding
     private val args: ListRepositoryFragmentArgs by navArgs()

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.githubapp.R
 
-class RepositoryFragment : Fragment() {
+class RepositoryFragment : Fragment(R.layout.fragment_repository) {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
