@@ -14,7 +14,7 @@ class SignInGoogleHandler(val context: Context) {
                     this.getContent = getContent
                 }
 
-    private lateinit var getContent: ActivityResultLauncher<GoogleSignInClient>
+    private var getContent: ActivityResultLauncher<GoogleSignInClient>? = null
     private var googleSignInClient: GoogleSignInClient
 
     init {
@@ -29,7 +29,7 @@ class SignInGoogleHandler(val context: Context) {
     }
 
     fun tryToSignInGoogle() {
-        getContent.launch(googleSignInClient)
+        getContent?.launch(googleSignInClient)
     }
 
     fun signOut(){
