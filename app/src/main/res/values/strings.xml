@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">GithubApp</string>
+    <string name="name_repository">Name repository:</string>
+    <string name="author">Author:</string>
+    <string name="avatar">Avatar</string>
+    <string name="description">Description:</string>
+    <string name="forks">Forks:</string>
+    <string name="stars">Stars:</string>
+    <string name="date_of_creation">Date of creation:</string>
+    <string name="sign_in_by_github">Sign in by Github</string>
+    <string name="sign_in_without_auth">Sign in without auth</string>
+    <string name="search">Search</string>
+    <string name="saved">Saved</string>
+</resources>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.githubapp.presentation.login.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_listRepositoryFragment"
+            app:destination="@id/listRepositoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listRepositoryFragment"
+        android:name="com.example.githubapp.presentation.repositoriesList.ListRepositoryFragment"
+        android:label="List repository"
+        tools:layout="@layout/fragment_list_repository">
+        <argument
+            android:name="type_auth"
+            app:argType="com.example.githubapp.presentation.login.TypeAuth"/>
+        <action
+            android:id="@+id/action_listRepositoryFragment_to_repositoryFragment"
+            app:destination="@id/repositoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/repositoryFragment"
+        android:name="com.example.githubapp.presentation.repository.RepositoryFragment"
+        android:label="fragment_repository"
+        tools:layout="@layout/fragment_repository" />
+</navigation>
