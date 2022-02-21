@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.githubapp.GithubApp
 import com.example.githubapp.R
 import com.example.githubapp.data.SignInGoogleContract
 import com.example.githubapp.data.SignInGoogleHandler
@@ -16,29 +17,34 @@ import com.example.githubapp.presentation.repositoriesList.ListRepositoryFragmen
 import com.google.android.gms.common.SignInButton
 import com.google.android.material.progressindicator.BaseProgressIndicator.HIDE_OUTWARD
 import com.google.android.material.progressindicator.BaseProgressIndicator.SHOW_OUTWARD
+import javax.inject.Inject
 
 class LoginFragment : Fragment(R.layout.fragment_login), LoginView {
 
     private lateinit var binding: FragmentLoginBinding
 
-    private lateinit var signInGoogleHandler: SignInGoogleHandler
+    @Inject
+    lateinit var signInGoogleHandler: SignInGoogleHandler
+
     private lateinit var loginPresenter: LoginPresenter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentLoginBinding.bind(view)
+        (context as GithubApp).componentManager.appComponent.inject(this)
 
         initActions()
 
         loginPresenter = LoginPresenter(this)
-        signInGoogleHandler = SignInGoogleHandler(requireContext(),
+        signInGoogleHandler = SignInGoogleHandler(requireContext())
+        signInGoogleHandler.initActivityResultLauncher(
             getContent = registerForActivityResult(SignInGoogleContract()) { googleSignInAccount ->
-                if (googleSignInAccount != null) {
-                    letTheUserIn()
-                } else {
-                    Toast.makeText(context, "GoogleSignInAccount = null", Toast.LENGTH_SHORT).show()
-                }
-            })
+            if (googleSignInAccount != null) {
+                letTheUserIn()
+            } else {
+                Toast.makeText(context, "GoogleSignInAccount = null", Toast.LENGTH_SHORT).show()
+            }
+        })
 
         //Request data by FragmentResult API
 /*        val REQUEST_CODE = "REQUEST_TYPE_AUTH"

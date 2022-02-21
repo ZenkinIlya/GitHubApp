@@ -9,11 +9,6 @@ import javax.inject.Singleton
 
 class SignInGoogleHandler(val context: Context) {
 
-    constructor(context: Context,
-                getContent: ActivityResultLauncher<GoogleSignInClient>) : this(context) {
-                    this.getContent = getContent
-                }
-
     private var getContent: ActivityResultLauncher<GoogleSignInClient>? = null
     private var googleSignInClient: GoogleSignInClient
 
@@ -21,7 +16,11 @@ class SignInGoogleHandler(val context: Context) {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .build()
-        googleSignInClient = GoogleSignIn.getClient(context, gso);
+        googleSignInClient = GoogleSignIn.getClient(context, gso)
+    }
+
+    fun initActivityResultLauncher(getContent: ActivityResultLauncher<GoogleSignInClient>){
+        this.getContent = getContent
     }
 
     fun isClientSigned(): Boolean{

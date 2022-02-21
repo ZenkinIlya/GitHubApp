@@ -9,7 +9,10 @@ class GithubApp: Application() {
 
     override fun onCreate() {
         super.onCreate()
+        initComponentManager()
+    }
+
+    private fun initComponentManager() {
         componentManager = ComponentManager(this)
-        componentManager.getAppComponent()
     }
 }

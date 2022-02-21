@@ -9,10 +9,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.githubapp.GithubApp
 import com.example.githubapp.R
 import com.example.githubapp.data.SignInGoogleContract
 import com.example.githubapp.data.SignInGoogleHandler
 import com.example.githubapp.databinding.FragmentListRepositoryBinding
+import javax.inject.Inject
 
 class ListRepositoryFragment : Fragment(R.layout.fragment_list_repository) {
 
@@ -21,14 +23,16 @@ class ListRepositoryFragment : Fragment(R.layout.fragment_list_repository) {
     //Delegate navArgs()
     private val args: ListRepositoryFragmentArgs by navArgs()
 
-    private lateinit var signInGoogleHandler: SignInGoogleHandler
+    @Inject
+    lateinit var signInGoogleHandler: SignInGoogleHandler
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentListRepositoryBinding.bind(view)
+        (context as GithubApp).componentManager.appComponent.inject(this)
 
         setHasOptionsMenu(true)
-        signInGoogleHandler = SignInGoogleHandler(requireContext())
+
         //Simple getArguments
 /*        val typeAuthBySimple = requireArguments().getString(ARG_TYPE_AUTH)
         Toast.makeText(context, typeAuthBySimple, Toast.LENGTH_SHORT).show()*/

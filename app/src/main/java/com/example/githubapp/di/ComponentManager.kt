@@ -1,11 +1,15 @@
 package com.example.githubapp.di
 
 import android.content.Context
+import com.example.githubapp.di.application.AppComponent
+import com.example.githubapp.di.application.DaggerAppComponent
+import com.example.githubapp.di.application.GoogleModule
 
-class ComponentManager(context: Context) {
+class ComponentManager(val context: Context) {
 
-    fun getAppComponent() {
-        TODO("Not yet implemented")
+    val appComponent: AppComponent by lazy {
+        DaggerAppComponent.builder()
+            .googleModule(GoogleModule(context))
+            .build()
     }
-
 }
