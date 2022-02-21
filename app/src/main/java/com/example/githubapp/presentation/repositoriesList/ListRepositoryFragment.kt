@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.githubapp.GithubApp
 import com.example.githubapp.R
+import com.example.githubapp.componentManager
 import com.example.githubapp.data.SignInGoogleContract
 import com.example.githubapp.data.SignInGoogleHandler
 import com.example.githubapp.databinding.FragmentListRepositoryBinding
@@ -29,7 +30,7 @@ class ListRepositoryFragment : Fragment(R.layout.fragment_list_repository) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentListRepositoryBinding.bind(view)
-        (context as GithubApp).componentManager.appComponent.inject(this)
+        requireContext().componentManager.appComponent.inject(this)
 
         setHasOptionsMenu(true)
 

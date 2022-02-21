@@ -19,7 +19,7 @@ class SignInGoogleContract: ActivityResultContract<GoogleSignInClient, GoogleSig
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): GoogleSignInAccount? {
-        Log.i(TAG, "resultCode = $resultCode")
+        Log.i(TAG, "resultCode = $resultCode; intent = $intent")
         if (intent == null) return null
         if (resultCode != Activity.RESULT_OK) return null
 
@@ -33,13 +33,13 @@ class SignInGoogleContract: ActivityResultContract<GoogleSignInClient, GoogleSig
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.statusCode)
+            Log.e(TAG, "signInResult:failed code=" + e.statusCode)
             null
         }
     }
 
     companion object{
-        const val TAG = "SignInGoogleContractTAG"
+        const val TAG = "tagSignInGoogleContract"
     }
 
 }
