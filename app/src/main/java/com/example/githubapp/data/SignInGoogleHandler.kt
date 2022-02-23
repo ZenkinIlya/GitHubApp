@@ -5,6 +5,7 @@ import androidx.activity.result.ActivityResultLauncher
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
 
 class SignInGoogleHandler(val context: Context) {
 
@@ -18,11 +19,11 @@ class SignInGoogleHandler(val context: Context) {
         googleSignInClient = GoogleSignIn.getClient(context, gso)
     }
 
-    fun initActivityResultLauncher(getContent: ActivityResultLauncher<GoogleSignInClient>){
+    fun initActivityResultLauncher(getContent: ActivityResultLauncher<GoogleSignInClient>) {
         this.getContent = getContent
     }
 
-    fun isClientSigned(): Boolean{
+    fun isClientSigned(): Boolean {
         return GoogleSignIn.getLastSignedInAccount(context) != null
     }
 
@@ -30,7 +31,15 @@ class SignInGoogleHandler(val context: Context) {
         getContent?.launch(googleSignInClient)
     }
 
-    fun signOut(){
+    fun signOut() {
         googleSignInClient.signOut()
+    }
+
+    fun getStatusMessage(statusCode: Int?): String {
+        return if (statusCode == null) {
+            "Unknown error"
+        } else {
+            GoogleSignInStatusCodes.getStatusCodeString(statusCode)
+        }
     }
 }

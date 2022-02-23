@@ -14,7 +14,9 @@ import com.example.githubapp.data.SignInGoogleContract
 import com.example.githubapp.data.SignInGoogleHandler
 import com.example.githubapp.databinding.FragmentLoginBinding
 import com.example.githubapp.presentation.repositoriesList.ListRepositoryFragment.Companion.ARG_TYPE_AUTH
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
 import com.google.android.gms.common.SignInButton
+import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.material.progressindicator.BaseProgressIndicator.HIDE_OUTWARD
 import com.google.android.material.progressindicator.BaseProgressIndicator.SHOW_OUTWARD
 import javax.inject.Inject
@@ -38,11 +40,18 @@ class LoginFragment : Fragment(R.layout.fragment_login), LoginView {
 
         loginPresenter = LoginPresenter(this)
         signInGoogleHandler.initActivityResultLauncher(
-            getContent = registerForActivityResult(SignInGoogleContract()) { googleSignInAccount ->
-                if (googleSignInAccount != null) {
-                    letTheUserIn()
+            getContent = registerForActivityResult(SignInGoogleContract()) { signInGoogleWrapper ->
+                if (signInGoogleWrapper == null) {
+                    Toast.makeText(context, "Unknown error", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(context, "GoogleSignInAccount = null", Toast.LENGTH_SHORT).show()
+                    when (signInGoogleWrapper.statusCode) {
+                        CommonStatusCodes.SUCCESS -> letTheUserIn()
+                        else -> Toast.makeText(
+                            context,
+                            signInGoogleHandler.getStatusMessage(signInGoogleWrapper.statusCode),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             })
 
