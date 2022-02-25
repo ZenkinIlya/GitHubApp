@@ -27,9 +27,9 @@ class SignInGoogleContract : ActivityResultContract<GoogleSignInClient, SignInGo
         if (intent == null) return null
         val signInResultFromIntent = Auth.GoogleSignInApi.getSignInResultFromIntent(intent)
         val statusCode = signInResultFromIntent?.status?.statusCode
+        Log.i(TAG, "statusCode = $statusCode")
 
         val signInGoogleWrapper = SignInGoogleWrapper(null, statusCode)
-        Log.i(TAG, "statusCode = $statusCode")
 
         if (resultCode != Activity.RESULT_OK) return signInGoogleWrapper
 
@@ -43,6 +43,7 @@ class SignInGoogleContract : ActivityResultContract<GoogleSignInClient, SignInGo
     ): SignInGoogleWrapper? {
         return try {
             val result = task.getResult(ApiException::class.java)
+
             signInGoogleWrapper.googleSignInAccount = result
             signInGoogleWrapper
         } catch (e: ApiException) {

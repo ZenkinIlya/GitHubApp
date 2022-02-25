@@ -1,12 +1,13 @@
 package com.example.githubapp.presentation.login
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.githubapp.R
 import com.example.githubapp.componentManager
@@ -14,31 +15,44 @@ import com.example.githubapp.data.SignInGoogleContract
 import com.example.githubapp.data.SignInGoogleHandler
 import com.example.githubapp.databinding.FragmentLoginBinding
 import com.example.githubapp.presentation.repositoriesList.ListRepositoryFragment.Companion.ARG_TYPE_AUTH
-import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.material.progressindicator.BaseProgressIndicator.HIDE_OUTWARD
 import com.google.android.material.progressindicator.BaseProgressIndicator.SHOW_OUTWARD
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
 import javax.inject.Inject
+import javax.inject.Provider
 
-class LoginFragment : Fragment(R.layout.fragment_login), LoginView {
+
+class LoginFragment : MvpAppCompatFragment(), LoginView {
 
     private lateinit var binding: FragmentLoginBinding
 
     @Inject
     lateinit var signInGoogleHandler: SignInGoogleHandler
 
-    private lateinit var loginPresenter: LoginPresenter
+    @Inject
+    lateinit var presenterProvider: Provider<LoginPresenter>
+
+    private val loginPresenter: LoginPresenter by moxyPresenter { presenterProvider.get() }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentLoginBinding.bind(view)
 
         requireContext().componentManager.appComponent.inject(this)
 
         initActions()
 
-        loginPresenter = LoginPresenter(this)
         signInGoogleHandler.initActivityResultLauncher(
             getContent = registerForActivityResult(SignInGoogleContract()) { signInGoogleWrapper ->
                 if (signInGoogleWrapper == null) {
@@ -54,23 +68,6 @@ class LoginFragment : Fragment(R.layout.fragment_login), LoginView {
                     }
                 }
             })
-
-        //Request data by FragmentResult API
-/*        val REQUEST_CODE = "REQUEST_TYPE_AUTH"
-        parentFragmentManager.setFragmentResult(REQUEST_CODE, bundleOf(ARG_TYPE_AUTH to TypeAuth.GOOGLE))
-        findNavController().navigate(...)  //Navigate to fragment which has FragmentListener*/
-
-        //Response listener from another fragments by FragmentResult API
-/*        parentFragmentManager.setFragmentResultListener(REQUEST_CODE, viewLifecycleOwner) { REQUEST_CODE, result ->
-            val text = result.getString(ARG_TYPE_AUTH)
-            binding.signInGithub.text = text
-        }*/
-
-        //Navigate by direction. Navigation safeargs
-        /** SafeArgs can request data only one way*/
-/*        val typeAuth = TypeAuth.GOOGLE
-        val direction = LoginFragmentDirections.actionLoginFragmentToListRepositoryFragment(typeAuth)
-        findNavController().navigate(direction)*/
     }
 
     override fun onStart() {

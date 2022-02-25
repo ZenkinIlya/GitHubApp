@@ -34,21 +34,8 @@ class ListRepositoryFragment : Fragment(R.layout.fragment_list_repository) {
 
         setHasOptionsMenu(true)
 
-        //Simple getArguments
-/*        val typeAuthBySimple = requireArguments().getString(ARG_TYPE_AUTH)
-        Toast.makeText(context, typeAuthBySimple, Toast.LENGTH_SHORT).show()*/
-
-//        val typeAuthByNavigationSafeArgs1 = ListRepositoryFragmentArgs.fromBundle(requireArguments()).typeAuth
-
         val typeAuthByNavigationSafeArgs2 = args.typeAuth
         Toast.makeText(context, typeAuthByNavigationSafeArgs2.name, Toast.LENGTH_SHORT).show()
-
-        //return data to parentFragment
-/*        binding.exit.setOnClickListener {
-            val text = binding.result.text.toString()
-            parentFragmentManager.setFragmentResult(RESULT, bundleOf(TEXT to text))
-            findNavController().popBackStack()
-        }*/
 
         initActions()
     }

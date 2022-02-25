@@ -1,11 +1,18 @@
 package com.example.githubapp.presentation.login
 
-class LoginPresenter(var loginView: LoginView) {
+import com.example.githubapp.presentation.common.BasePresenter
+import moxy.InjectViewState
+import javax.inject.Inject
+
+@InjectViewState
+class LoginPresenter
+@Inject
+constructor(): BasePresenter<LoginView>() {
 
     fun onClickSignInGoogle(){
-        loginView.showLoading(true)
-        loginView.signInGoogle()
-        loginView.showLoading(false)
+        viewState.showLoading(true)
+        viewState.signInGoogle()
+        viewState.showLoading(false)
     }
 
     fun onClickSignInGithub() {
