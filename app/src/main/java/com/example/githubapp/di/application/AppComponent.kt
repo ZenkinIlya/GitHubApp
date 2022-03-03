@@ -6,7 +6,7 @@ import com.example.githubapp.presentation.repositoriesList.ListRepositoryFragmen
 import dagger.Component
 import javax.inject.Singleton
 
-@Component(modules = [GoogleModule::class])
+@Component(modules = [AppModule::class, GoogleModule::class])
 @Singleton
 interface AppComponent {
 

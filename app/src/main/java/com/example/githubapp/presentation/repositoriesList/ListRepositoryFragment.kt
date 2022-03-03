@@ -22,7 +22,7 @@ class ListRepositoryFragment : Fragment(R.layout.fragment_list_repository) {
     private lateinit var binding: FragmentListRepositoryBinding
 
     //Delegate navArgs()
-    private val args: ListRepositoryFragmentArgs by navArgs()
+//    private val args: ListRepositoryFragmentArgs by navArgs()
 
     @Inject
     lateinit var signInGoogleHandler: SignInGoogleHandler
@@ -34,8 +34,8 @@ class ListRepositoryFragment : Fragment(R.layout.fragment_list_repository) {
 
         setHasOptionsMenu(true)
 
-        val typeAuthByNavigationSafeArgs2 = args.typeAuth
-        Toast.makeText(context, typeAuthByNavigationSafeArgs2.name, Toast.LENGTH_SHORT).show()
+//        val typeAuthByNavigationSafeArgs2 = args.typeAuth
+//        Toast.makeText(context, typeAuthByNavigationSafeArgs2.name, Toast.LENGTH_SHORT).show()
 
         initActions()
     }
@@ -47,7 +47,7 @@ class ListRepositoryFragment : Fragment(R.layout.fragment_list_repository) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_exit -> {
-                signInGoogleHandler.signOut()
+                if (signInGoogleHandler.isClientSigned()) signInGoogleHandler.signOut()
                 findNavController().popBackStack()
                 true
             }
