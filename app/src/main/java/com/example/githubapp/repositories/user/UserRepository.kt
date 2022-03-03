@@ -1,6 +1,8 @@
 package com.example.githubapp.repositories.user
 
 import android.content.SharedPreferences
+import com.example.githubapp.data.Const.DEFAULT_EMAIL
+import com.example.githubapp.data.Const.EMAIL
 
 class UserRepository(private val sharedPreferences: SharedPreferences) {
 
@@ -10,14 +12,9 @@ class UserRepository(private val sharedPreferences: SharedPreferences) {
             .apply()
     }
 
-    fun getEmail(): String? {
+    fun getEmail(): String {
         return if (!sharedPreferences.contains(EMAIL)) {
             DEFAULT_EMAIL
-        } else sharedPreferences.getString(EMAIL, DEFAULT_EMAIL)
-    }
-
-    companion object{
-        const val EMAIL = "email"
-        const val DEFAULT_EMAIL = "-"
+        } else sharedPreferences.getString(EMAIL, DEFAULT_EMAIL).toString()
     }
 }

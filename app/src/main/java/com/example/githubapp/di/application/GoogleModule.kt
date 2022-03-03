@@ -3,7 +3,7 @@ package com.example.githubapp.di.application
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.githubapp.business.google.SignInInteractor
-import com.example.githubapp.data.SignInGoogleHandler
+import com.example.githubapp.data.signIn.SignInGoogleHandler
 import com.example.githubapp.repositories.user.UserRepository
 import dagger.Module
 import dagger.Provides

@@ -1,7 +1,7 @@
 package com.example.githubapp.business.google
 
+import com.example.githubapp.data.Const.DEFAULT_EMAIL
 import com.example.githubapp.repositories.user.UserRepository
-import com.example.githubapp.repositories.user.UserRepository.Companion.DEFAULT_EMAIL
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 
 class SignInInteractor(private val userRepository: UserRepository) {
@@ -10,7 +10,7 @@ class SignInInteractor(private val userRepository: UserRepository) {
         userRepository.putEmail(googleSignInAccount?.email)
     }
 
-    fun getEmailAccount(): String?{
+    fun getEmailAccount(): String{
         return userRepository.getEmail()
     }
 

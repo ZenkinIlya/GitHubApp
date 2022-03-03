@@ -10,18 +10,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.githubapp.R
-import com.example.githubapp.business.google.SignInInteractor
 import com.example.githubapp.componentManager
-import com.example.githubapp.data.SignInGoogleContract
-import com.example.githubapp.data.SignInGoogleHandler
+import com.example.githubapp.data.signIn.SignInGoogleContract
+import com.example.githubapp.data.signIn.SignInGoogleHandler
 import com.example.githubapp.databinding.FragmentLoginBinding
 import com.google.android.gms.common.SignInButton
 import com.google.android.material.progressindicator.BaseProgressIndicator.HIDE_OUTWARD
 import com.google.android.material.progressindicator.BaseProgressIndicator.SHOW_OUTWARD
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

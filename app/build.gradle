@@ -49,20 +49,26 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     implementation "androidx.viewpager:viewpager:$view_pager"
-    implementation "com.google.dagger:dagger:$daggerVersion"
-    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    implementation "com.google.dagger:dagger:$dagger_Version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_Version"
 
     implementation 'com.google.android.gms:play-services-auth:20.1.0'
 
     //Moxy
-    implementation "com.github.moxy-community:moxy-android:$moxyVersion"
-    implementation "com.github.moxy-community:moxy-androidx:$moxyVersion"
-    implementation "com.github.moxy-community:moxy-ktx:$moxyVersion"
-    kapt "com.github.moxy-community:moxy-compiler:$moxyVersion"
+    implementation "com.github.moxy-community:moxy-android:$moxy_Version"
+    implementation "com.github.moxy-community:moxy-androidx:$moxy_Version"
+    implementation "com.github.moxy-community:moxy-ktx:$moxy_Version"
+    kapt "com.github.moxy-community:moxy-compiler:$moxy_Version"
 
     //RxJava2
     implementation 'io.reactivex.rxjava2:rxjava:2.2.12'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+
+    //ViewPager2
+    implementation "androidx.viewpager2:viewpager2:$view_pager"
+
+    //ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$view_model"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

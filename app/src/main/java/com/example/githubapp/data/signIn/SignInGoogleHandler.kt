@@ -1,4 +1,4 @@
-package com.example.githubapp.data
+package com.example.githubapp.data.signIn
 
 import android.content.Context
 import androidx.activity.result.ActivityResultLauncher
