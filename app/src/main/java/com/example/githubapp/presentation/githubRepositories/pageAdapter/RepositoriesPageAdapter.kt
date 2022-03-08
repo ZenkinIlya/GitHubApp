@@ -19,9 +19,13 @@ class RepositoriesPageAdapter(
     }
 
     override fun createFragment(position: Int): Fragment {
-        return when (position) {
-            0 -> RepositoriesSearcherFragment()
-            else -> SavedRepositoriesFragment()
+        return if (authorized){
+            return when (position) {
+                0 ->  RepositoriesSearcherFragment()
+                else ->  SavedRepositoriesFragment()
+            }
+        }else{
+            RepositoriesSearcherFragment()
         }
     }
 }

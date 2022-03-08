@@ -8,10 +8,7 @@ import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState
-class RepositoriesPresenter @Inject constructor(
-    var signInInteractor: SignInInteractor,
-    var repositoryInteractor: RepositoryInteractor
-) :
+class RepositoriesPresenter @Inject constructor(var signInInteractor: SignInInteractor) :
     BasePresenter<RepositoriesView>() {
 
     override fun onFirstViewAttach() {

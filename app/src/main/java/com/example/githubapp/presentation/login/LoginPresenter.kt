@@ -1,7 +1,7 @@
 package com.example.githubapp.presentation.login
 
 import com.example.githubapp.business.google.SignInInteractor
-import com.example.githubapp.models.SignInGoogleWrapper
+import com.example.githubapp.models.signIn.SignInGoogleWrapper
 import com.example.githubapp.presentation.common.BasePresenter
 import com.google.android.gms.common.api.CommonStatusCodes
 import moxy.InjectViewState

@@ -1,118 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".presentation.repository.RepositoryFragment"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="10dp"
+    tools:context=".presentation.repository.RepositoryFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/name_repository"/>
+            android:text="@string/name_repository" />
+
         <TextView
             android:id="@+id/name_repository"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
             android:paddingEnd="0dp"
-            tools:text="@tools:sample/lorem"/>
+            tools:text="@tools:sample/lorem" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/author"/>
+            android:text="@string/author" />
+
         <TextView
             android:id="@+id/author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
             android:paddingEnd="0dp"
-            tools:text="@tools:sample/first_names"/>
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/avatar"
-            tools:src="@drawable/ic_launcher_background"/>
+            tools:text="@tools:sample/first_names" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/avatar_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/avatar"
+        tools:src="@drawable/ic_account" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/description"/>
+            android:text="@string/description" />
+
         <TextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
             android:paddingEnd="0dp"
-            tools:text="@tools:sample/lorem"/>
+            tools:text="@tools:sample/lorem" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/forks"/>
+            android:text="@string/forks" />
+
         <TextView
             android:id="@+id/forks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
             android:paddingEnd="0dp"
-            tools:text="@tools:sample/us_zipcodes"/>
+            tools:text="@tools:sample/us_zipcodes" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/stars"/>
+            android:text="@string/stars" />
+
         <TextView
             android:id="@+id/stars"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
             android:paddingEnd="0dp"
-            tools:text="@tools:sample/us_zipcodes"/>
+            tools:text="@tools:sample/us_zipcodes" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/date_of_creation"/>
+            android:text="@string/date_of_creation" />
+
         <TextView
             android:id="@+id/date_of_creation"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:paddingStart="20dp"
             android:paddingEnd="0dp"
-            tools:text="@tools:sample/date/ddmmyy"/>
+            tools:text="@tools:sample/date/ddmmyy" />
+
+        <ImageView
+            android:id="@+id/favorite_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            tools:src="@drawable/ic_favorite_border"
+            android:contentDescription="@string/favorite" />
     </LinearLayout>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

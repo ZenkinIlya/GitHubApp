@@ -31,7 +31,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures{
+    buildFeatures {
         viewBinding true
     }
 }
@@ -48,27 +48,47 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
-    implementation "androidx.viewpager:viewpager:$view_pager"
-    implementation "com.google.dagger:dagger:$dagger_Version"
-    kapt "com.google.dagger:dagger-compiler:$dagger_Version"
+//    implementation "androidx.viewpager:viewpager:$view_pager_version"
+    //Dagger
+    implementation "com.google.dagger:dagger:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
     implementation 'com.google.android.gms:play-services-auth:20.1.0'
 
     //Moxy
-    implementation "com.github.moxy-community:moxy-android:$moxy_Version"
-    implementation "com.github.moxy-community:moxy-androidx:$moxy_Version"
-    implementation "com.github.moxy-community:moxy-ktx:$moxy_Version"
-    kapt "com.github.moxy-community:moxy-compiler:$moxy_Version"
+    implementation "com.github.moxy-community:moxy-android:$moxy_version"
+    implementation "com.github.moxy-community:moxy-androidx:$moxy_version"
+    implementation "com.github.moxy-community:moxy-ktx:$moxy_version"
+    kapt "com.github.moxy-community:moxy-compiler:$moxy_version"
 
     //RxJava2
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.12'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+    implementation "io.reactivex.rxjava3:rxjava:$rxjava_version"
+    implementation "io.reactivex.rxjava3:rxandroid:$rxandroid_version"
 
     //ViewPager2
-    implementation "androidx.viewpager2:viewpager2:$view_pager"
+    implementation "androidx.viewpager2:viewpager2:$view_pager_version"
 
     //ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$view_model"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$view_model_version"
+
+    //Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$logging_interceptor_version"
+
+    //RecyclerView
+    implementation "androidx.recyclerview:recyclerview:$recycler_view_version"
+
+    //libs for generate data
+//    implementation 'com.github.javafaker:javafaker:1.0.2'
+
+    //Glide
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
+
+    //Timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

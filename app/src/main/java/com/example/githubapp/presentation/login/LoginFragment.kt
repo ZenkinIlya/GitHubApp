@@ -35,21 +35,13 @@ class LoginFragment : MvpAppCompatFragment(R.layout.fragment_login), LoginView {
     lateinit var signInGoogleHandler: SignInGoogleHandler
 
     override fun onAttach(context: Context) {
-        super.onAttach(context)
         requireContext().componentManager.appComponent.inject(this)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentLoginBinding.inflate(inflater, container, false)
-        return binding.root
+        super.onAttach(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentLoginBinding.bind(view)
 
         initActions()
 

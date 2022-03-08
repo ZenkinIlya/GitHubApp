@@ -5,4 +5,19 @@
     android:layout_height="match_parent"
     tools:context=".presentation.savedRepositories.SavedRepositoriesFragment">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_saved_repositories"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:itemCount="4"
+        tools:listitem="@layout/fragment_repository" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        android:layout_gravity="center"/>
+
 </FrameLayout>

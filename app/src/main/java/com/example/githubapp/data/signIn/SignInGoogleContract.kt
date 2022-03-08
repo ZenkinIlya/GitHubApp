@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContract
-import com.example.githubapp.models.SignInGoogleWrapper
+import com.example.githubapp.models.signIn.SignInGoogleWrapper
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
