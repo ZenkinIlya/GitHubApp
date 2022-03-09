@@ -14,5 +14,5 @@ interface RepositoriesView: MvpView {
     fun showError(error: String)
 
     @StateStrategyType(OneExecutionStateStrategy::class)
-    fun displaySavedRepositories(authorizedUser: Boolean)
+    fun displayViewPageRepositories(showPageSavedRepositories: Boolean)
 }

@@ -22,7 +22,7 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
     RepositoriesSearcherView {
 
     private lateinit var binding: FragmentRepositoriesSearcherBinding
-    lateinit var adapter: RepositoriesSearcherAdapter
+    private lateinit var adapter: RepositoriesSearcherAdapter
 
     @Inject
     lateinit var presenterProvider: Provider<RepositoriesSearcherPresenter>

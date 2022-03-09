@@ -2,10 +2,7 @@ package com.example.githubapp.presentation.githubRepositories
 
 import android.content.Context
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -42,7 +39,6 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
 
     @Inject
     lateinit var schedulersProvider: SchedulersProvider
-
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onAttach(context: Context) {
@@ -51,11 +47,21 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
         requireContext().componentManager.appComponent.inject(this)
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        Timber.i("onCreateView()")
+        binding = FragmentRepositoriesBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Timber.i("onViewCreated()")
-        binding = FragmentRepositoriesBinding.bind(view)
         setHasOptionsMenu(true)
+        repositoriesPresenter.init()
     }
 
     override fun onDestroy() {
@@ -95,9 +101,11 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
             .filter { text -> text.isNotBlank() }
             .observeOn(schedulersProvider.ui())
             .doOnNext { searchViewModel.setQuery(it) }
-            .subscribe { text ->
-                Timber.d("subscriber: $text")
-            }
+            .subscribe(
+                { text ->
+                    Timber.d("subscriber: $text")
+                },
+                { Timber.e("onError: $it") })
         compositeDisposable.add(disposable)
     }
 
@@ -120,12 +128,13 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
         TODO("Not yet implemented")
     }
 
-    override fun displaySavedRepositories(authorizedUser: Boolean) {
+    override fun displayViewPageRepositories(showPageSavedRepositories: Boolean) {
+        Timber.d("displayViewPageRepositories(): $showPageSavedRepositories")
         val repositoriesPageAdapter =
             RepositoriesPageAdapter(
                 requireActivity().supportFragmentManager,
                 lifecycle,
-                authorizedUser
+                showPageSavedRepositories
             )
         binding.viewPager2.adapter = repositoriesPageAdapter
         TabLayoutMediator(binding.tabLayout, binding.viewPager2) { tab, position ->
