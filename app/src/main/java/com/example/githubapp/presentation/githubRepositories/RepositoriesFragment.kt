@@ -63,11 +63,40 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
         setHasOptionsMenu(true)
         repositoriesPresenter.init()
     }
+    override fun onStart() {
+        super.onStart()
+        Timber.i("onStart()")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Timber.i("onPause()")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Timber.i("onStop()")
+    }
+
+    override fun onDestroyOptionsMenu() {
+        super.onDestroyOptionsMenu()
+        Timber.i("onDestroyOptionsMenu()")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Timber.i("onDestroyView()")
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()
         Timber.i("onDestroy()")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Timber.i("onDetach()")
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

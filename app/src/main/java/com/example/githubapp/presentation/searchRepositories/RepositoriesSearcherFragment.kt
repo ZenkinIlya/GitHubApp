@@ -2,7 +2,9 @@ package com.example.githubapp.presentation.searchRepositories
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,9 +35,17 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
         requireContext().componentManager.appComponent.inject(this)
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRepositoriesSearcherBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentRepositoriesSearcherBinding.bind(view)
 
         initSearchObserve()
 
@@ -45,9 +55,39 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
         binding.recyclerViewRepositoriesSearcher.adapter = adapter
     }
 
+    override fun onStart() {
+        super.onStart()
+        Timber.i("onStart()")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.i("onResume()")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Timber.i("onPause()")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Timber.i("onStop()")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Timber.i("onDestroyView()")
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         Timber.i("onDestroy()")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Timber.i("onDetach()")
     }
 
     private fun initSearchObserve() {

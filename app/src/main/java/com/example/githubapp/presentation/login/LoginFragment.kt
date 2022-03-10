@@ -93,14 +93,14 @@ class LoginFragment : MvpAppCompatFragment(R.layout.fragment_login), LoginView {
         Timber.i("onDestroyView()")
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        Timber.i("onDetach()")
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         Timber.i("onDestroy()")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Timber.i("onDetach()")
     }
 
     private fun initActions() {
