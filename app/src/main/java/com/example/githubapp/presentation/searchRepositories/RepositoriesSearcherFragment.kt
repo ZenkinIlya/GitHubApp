@@ -45,6 +45,11 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
         binding.recyclerViewRepositoriesSearcher.adapter = adapter
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.i("onDestroy()")
+    }
+
     private fun initSearchObserve() {
         val searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
         searchViewModel.getQuery().observe(viewLifecycleOwner) {

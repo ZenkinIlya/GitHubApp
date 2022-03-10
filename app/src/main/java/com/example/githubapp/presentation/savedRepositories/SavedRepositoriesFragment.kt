@@ -11,6 +11,7 @@ import com.example.githubapp.databinding.FragmentSavedRepositoriesBinding
 import com.example.githubapp.models.SearchViewModel
 import com.example.githubapp.presentation.githubRepositories.RepositoriesFragment
 import moxy.MvpAppCompatFragment
+import timber.log.Timber
 
 class SavedRepositoriesFragment() : MvpAppCompatFragment(R.layout.fragment_saved_repositories) {
 
@@ -26,6 +27,11 @@ class SavedRepositoriesFragment() : MvpAppCompatFragment(R.layout.fragment_saved
     ): View {
         binding = FragmentSavedRepositoriesBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.i("onDestroy()")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

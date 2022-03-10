@@ -132,8 +132,8 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
         Timber.d("displayViewPageRepositories(): $showPageSavedRepositories")
         val repositoriesPageAdapter =
             RepositoriesPageAdapter(
-                requireActivity().supportFragmentManager,
-                lifecycle,
+                childFragmentManager,
+                viewLifecycleOwner.lifecycle,
                 showPageSavedRepositories
             )
         binding.viewPager2.adapter = repositoriesPageAdapter
