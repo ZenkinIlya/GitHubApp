@@ -19,6 +19,7 @@ import com.google.android.material.progressindicator.BaseProgressIndicator.HIDE_
 import com.google.android.material.progressindicator.BaseProgressIndicator.SHOW_OUTWARD
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -35,13 +36,24 @@ class LoginFragment : MvpAppCompatFragment(R.layout.fragment_login), LoginView {
     lateinit var signInGoogleHandler: SignInGoogleHandler
 
     override fun onAttach(context: Context) {
+        Timber.i("onAttach()")
         requireContext().componentManager.appComponent.inject(this)
         super.onAttach(context)
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        Timber.i("onCreateView()")
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentLoginBinding.bind(view)
+        Timber.i("onViewCreated()")
 
         initActions()
 
@@ -53,10 +65,42 @@ class LoginFragment : MvpAppCompatFragment(R.layout.fragment_login), LoginView {
 
     override fun onStart() {
         super.onStart()
+        Timber.i("onStart()")
         //Check if user authorized by Google
         if (signInGoogleHandler.isClientSigned()) {
             navigateToRepositories()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Timber.i("onPause()")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Timber.i("onStop()")
+    }
+
+    override fun onDestroyOptionsMenu() {
+        super.onDestroyOptionsMenu()
+        Timber.i("onDestroyOptionsMenu()")
+    }
+
+    override fun onDestroyView() {
+        signInGoogleHandler.unregisterActivityResultLauncher()
+        super.onDestroyView()
+        Timber.i("onDestroyView()")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Timber.i("onDetach()")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.i("onDestroy()")
     }
 
     private fun initActions() {

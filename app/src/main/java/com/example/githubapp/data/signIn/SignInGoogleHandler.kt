@@ -23,6 +23,10 @@ class SignInGoogleHandler(val context: Context) {
         this.getContent = getContent
     }
 
+    fun unregisterActivityResultLauncher(){
+        getContent?.unregister()
+    }
+
     fun isClientSigned(): Boolean {
         return GoogleSignIn.getLastSignedInAccount(context) != null
     }

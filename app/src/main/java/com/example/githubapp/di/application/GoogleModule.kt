@@ -13,7 +13,6 @@ import javax.inject.Singleton
 class GoogleModule {
 
     @Provides
-    @Singleton
     fun provideSignInGoogleHandler(context: Context): SignInGoogleHandler {
         return SignInGoogleHandler(context)
     }
