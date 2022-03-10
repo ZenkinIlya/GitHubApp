@@ -108,6 +108,12 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
         searchView.queryHint = "Type here to search"
 
         val searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
+        if (searchViewModel.getQuery().value != null){
+            findItem.expandActionView()
+            searchView.clearFocus()
+            Timber.d("searchViewModel.getQuery().value=${searchViewModel.getQuery().value}")
+            searchView.setQuery(searchViewModel.getQuery().value, false)
+        }
 
         val disposable = Observable.create(ObservableOnSubscribe<String> { subscriber ->
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
