@@ -5,18 +5,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.githubapp.R
 import com.example.githubapp.databinding.FragmentSavedRepositoriesBinding
-import com.example.githubapp.models.SearchViewModel
-import com.example.githubapp.presentation.githubRepositories.RepositoriesFragment
+import com.example.githubapp.models.viewModels.SearchViewModel
+import com.example.githubapp.models.repository.Repository
 import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
 import timber.log.Timber
+import javax.inject.Inject
+import javax.inject.Provider
 
-class SavedRepositoriesFragment() : MvpAppCompatFragment(R.layout.fragment_saved_repositories) {
+class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_repositories),
+    SavedRepositoriesView {
 
     lateinit var binding: FragmentSavedRepositoriesBinding
+
+    @Inject
+    lateinit var providePresenter: Provider<SavedRepositoriesPresenter>
+    private val savedRepositoriesPresenter by moxyPresenter { providePresenter.get() }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -37,7 +44,7 @@ class SavedRepositoriesFragment() : MvpAppCompatFragment(R.layout.fragment_saved
         Timber.i("onViewCreated()")
         val searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
         searchViewModel.getQuery().observe(viewLifecycleOwner) {
-//            Toast.makeText(context, "Saved = $it", Toast.LENGTH_SHORT).show()
+            savedRepositoriesPresenter.onSearchSavedRepositories(it)
         }
     }
 
@@ -74,5 +81,21 @@ class SavedRepositoriesFragment() : MvpAppCompatFragment(R.layout.fragment_saved
     override fun onDetach() {
         super.onDetach()
         Timber.i("onDetach()")
+    }
+
+    override fun showLoading(show: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun showError(error: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun showRepositories(listRepository: List<Repository>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun markRepositoryAsSaved(repository: Repository) {
+        TODO("Not yet implemented")
     }
 }
