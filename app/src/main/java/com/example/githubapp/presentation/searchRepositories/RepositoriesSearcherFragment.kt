@@ -12,7 +12,7 @@ import com.example.githubapp.R
 import com.example.githubapp.componentManager
 import com.example.githubapp.databinding.FragmentRepositoriesSearcherBinding
 import com.example.githubapp.models.repository.Repository
-import com.example.githubapp.models.SearchViewModel
+import com.example.githubapp.models.viewModels.SearchViewModel
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter

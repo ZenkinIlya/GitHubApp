@@ -6,7 +6,7 @@ import io.reactivex.rxjava3.core.Single
 
 class RepositoriesRepository(
     private val githubApiService: GithubApiService,
-    private val repositoriesCache: RepositoriesCache
+    private val cacheRepository: CacheRepository
 ) {
 
     /** Get repositories from githubApi service with save in cache*/
@@ -14,8 +14,8 @@ class RepositoriesRepository(
         return githubApiService.getRepositories(mapSearchData)
             .map { it.items }
             .doOnSuccess { repositoryEntities ->
-                repositoriesCache.clearCache()
-                repositoriesCache.putRepositories(repositoryEntities)
+                cacheRepository.clearCache()
+                cacheRepository.putRepositories(repositoryEntities)
             }
     }
 

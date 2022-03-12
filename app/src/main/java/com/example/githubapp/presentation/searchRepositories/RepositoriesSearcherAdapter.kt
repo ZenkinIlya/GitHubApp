@@ -28,7 +28,7 @@ class RepositoriesSearcherAdapter :
     override fun onBindViewHolder(holder: RepositoriesViewHolder, position: Int) {
         val repository = repositories[position]
         with(holder.binding){
-            nameRepository.text = repository.nameRepository
+            nameRepository.text = repository.name
             author.text = repository.owner.author
 
             if (repository.owner.avatar?.isNotBlank() == true){

@@ -26,7 +26,7 @@ data class Repository(
     @SerializedName("id")
     val id: Long,
     @SerializedName("name")
-    val nameRepository: String,
+    val name: String,
     @SerializedName("owner")
     val owner: Owner,
     @SerializedName("description")
