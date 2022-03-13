@@ -2,8 +2,8 @@ package com.example.githubapp.models.db
 
 import androidx.room.Entity
 
-@Entity(primaryKeys = ["userId", "repositoryId"])
+@Entity(primaryKeys = ["email", "idRepository"])
 data class UserRepositoryCrossRef(
-    val userId: Long,
-    val repositoryId: Long
+    val email: String,
+    val idRepository: Long
 )

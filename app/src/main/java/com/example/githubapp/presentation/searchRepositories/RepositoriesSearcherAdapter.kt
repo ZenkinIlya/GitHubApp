@@ -29,11 +29,11 @@ class RepositoriesSearcherAdapter :
         val repository = repositories[position]
         with(holder.binding){
             nameRepository.text = repository.name
-            author.text = repository.owner.author
+            login.text = repository.owner.login
 
-            if (repository.owner.avatar?.isNotBlank() == true){
+            if (repository.owner.avatarUrl?.isNotBlank() == true){
                 Glide.with(avatarImageView.context)
-                    .load(repository.owner.avatar)
+                    .load(repository.owner.avatarUrl)
                     .circleCrop()
                     .placeholder(R.drawable.ic_account)
                     .error(R.drawable.ic_account)

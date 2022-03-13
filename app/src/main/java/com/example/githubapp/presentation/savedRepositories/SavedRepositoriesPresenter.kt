@@ -11,8 +11,6 @@ class SavedRepositoriesPresenter @Inject constructor(
 ) : BasePresenter<SavedRepositoriesView>() {
 
     fun onSearchSavedRepositories(nameRepository: String?) {
-
-        TODO("Not yet implemented")
     }
 
 }

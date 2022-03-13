@@ -13,7 +13,7 @@ class RepositoryInteractor(
     /** Get all repositories by searchData and search favorite repositories by compare
      * with repositories from cache */
     fun getRepositoriesWithFavoriteFromCache(mapSearchData: Map<String, String>): Single<List<Repository>> {
-        return repositoriesRepository.getRepositoriesFromService(mapSearchData)
+        return repositoriesRepository.getRepositoriesFromGithubApiService(mapSearchData)
             .subscribeOn(schedulersProvider.io())
     }
 

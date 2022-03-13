@@ -10,7 +10,7 @@ class RepositoriesRepository(
 ) {
 
     /** Get repositories from githubApi service with save in cache*/
-    fun getRepositoriesFromService(mapSearchData: Map<String, String>): Single<List<Repository>> {
+    fun getRepositoriesFromGithubApiService(mapSearchData: Map<String, String>): Single<List<Repository>> {
         return githubApiService.getRepositories(mapSearchData)
             .map { it.items }
             .doOnSuccess { repositoryEntities ->

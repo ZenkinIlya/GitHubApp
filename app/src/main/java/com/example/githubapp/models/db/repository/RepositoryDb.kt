@@ -1,22 +1,18 @@
 package com.example.githubapp.models.db.repository
 
 import androidx.room.*
+import com.example.githubapp.models.repository.Owner
 
 @Entity(
     tableName = "repositories",
-    indices = [
-        Index("id_repository", unique = true)
-    ]
 )
 data class RepositoryDb(
-    @PrimaryKey(autoGenerate = true)
-    val repositoryId: Long,
-    @ColumnInfo(name = "id_repository")
+    @PrimaryKey
     val idRepository: Long,
     @ColumnInfo(name = "name")
     val name: String,
     @Embedded
-    val ownerDb: OwnerDb,
+    val owner: Owner,
     @ColumnInfo(name = "description")
     val description: String?,
     @ColumnInfo(name = "forks_count")

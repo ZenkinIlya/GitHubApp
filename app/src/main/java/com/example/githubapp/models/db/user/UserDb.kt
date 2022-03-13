@@ -8,14 +8,9 @@ import com.example.githubapp.models.db.repository.RepositoryDb
 
 @Entity(
     tableName = "users",
-    indices = [
-        Index("email", unique = true)
-    ]
 )
 data class UserDb(
-    @PrimaryKey(autoGenerate = true)
-    val userId: Long,
-    @ColumnInfo(name = "email")
+    @PrimaryKey
     val email: String,
     @ColumnInfo(name = "display_name")
     val displayName: String,

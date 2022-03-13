@@ -13,7 +13,6 @@ class UserMapper {
     )
 
     fun fromUser(user: User): UserDb = UserDb(
-        userId = 0,
         email = user.email,
         displayName = user.displayName,
         idToken = user.idToken,
