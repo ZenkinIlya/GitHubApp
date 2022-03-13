@@ -11,8 +11,9 @@ import javax.inject.Inject
 class RepositoriesPresenter @Inject constructor(var signInInteractor: SignInInteractor) :
     BasePresenter<RepositoriesView>() {
 
-    fun init(){
-        val emailAccount = signInInteractor.getEmailAccount()
-        viewState.displayViewPageRepositories(emailAccount != DEFAULT_EMAIL)
+    fun init() {
+        val currentUser = signInInteractor.getCurrentUser()
+        viewState.displayViewPageRepositories(currentUser.email != DEFAULT_EMAIL)
+
     }
 }

@@ -1,20 +1,23 @@
 package com.example.githubapp.repositories.user
 
 import android.content.SharedPreferences
-import com.example.githubapp.data.Const.DEFAULT_EMAIL
-import com.example.githubapp.data.Const.EMAIL
+import com.example.githubapp.data.Const.USER
+import com.example.githubapp.models.user.User
+import com.google.gson.Gson
 
 class UserRepository(private val sharedPreferences: SharedPreferences) {
 
-    fun putEmail(email: String?) {
+    fun putUser(user: User) {
+        val gson = Gson()
+        val jsonUser = gson.toJson(user)
         sharedPreferences.edit()
-            .putString(EMAIL, email)
+            .putString(USER, jsonUser)
             .apply()
     }
 
-    fun getEmail(): String {
-        return if (!sharedPreferences.contains(EMAIL)) {
-            DEFAULT_EMAIL
-        } else sharedPreferences.getString(EMAIL, DEFAULT_EMAIL).toString()
+    fun getUser(): User{
+        val gson = Gson()
+        val json = sharedPreferences.getString(USER, "")
+        return gson.fromJson(json, User::class.java)
     }
 }

@@ -6,12 +6,12 @@ import androidx.room.Relation
 import com.example.githubapp.models.db.UserRepositoryCrossRef
 import com.example.githubapp.models.db.repository.RepositoryDb
 
-data class UserDbWithRepositoryDb(
+data class UserDbWithRepositoriesDb(
     @Embedded val userDb: UserDb,
     @Relation(
         parentColumn = "userId",
         entityColumn = "repositoryId",
         associateBy = Junction(UserRepositoryCrossRef::class)
     )
-    val repositoryDb: RepositoryDb
+    val repositoriesDb: List<RepositoryDb>
 )

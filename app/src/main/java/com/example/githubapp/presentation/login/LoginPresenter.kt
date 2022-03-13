@@ -35,8 +35,13 @@ class LoginPresenter @Inject constructor(private val signInInteractor: SignInInt
         } else {
             when (signInGoogleWrapper.statusCode) {
                 CommonStatusCodes.SUCCESS -> {
-                    signInInteractor.saveSignInGoogleDataAccount(signInGoogleWrapper.googleSignInAccount)
-                    viewState.navigateToRepositories()
+                    val googleSignInAccount = signInGoogleWrapper.googleSignInAccount
+                    if (googleSignInAccount == null) {
+                        viewState.showError("statusCode SUCCESS but googleSignInAccount null")
+                    } else {
+                        signInInteractor.saveSignInGoogleDataAccount(googleSignInAccount)
+                        viewState.navigateToRepositories()
+                    }
                 }
                 else ->
                     viewState.showErrorSignInGoogle(signInGoogleWrapper.statusCode)

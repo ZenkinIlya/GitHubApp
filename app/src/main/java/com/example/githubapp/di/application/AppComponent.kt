@@ -8,7 +8,8 @@ import com.example.githubapp.presentation.searchRepositories.RepositoriesSearche
 import dagger.Component
 import javax.inject.Singleton
 
-@Component(modules = [AppModule::class, GoogleModule::class, RepositoriesModule::class, RetrofitModule::class])
+@Component(modules = [AppModule::class, GoogleModule::class, RepositoriesModule::class,
+    RetrofitModule::class, MappersModule::class, RoomModule::class])
 @Singleton
 interface AppComponent {
 
