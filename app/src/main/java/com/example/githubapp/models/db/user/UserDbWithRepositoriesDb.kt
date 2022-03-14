@@ -1,7 +1,6 @@
 package com.example.githubapp.models.db.user
 
 import androidx.room.Embedded
-import androidx.room.Entity
 import androidx.room.Junction
 import androidx.room.Relation
 import com.example.githubapp.models.db.UserRepositoryCrossRef

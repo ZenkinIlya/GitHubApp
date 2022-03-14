@@ -1,7 +1,6 @@
 package com.example.githubapp.models.repository
 
 import com.google.gson.annotations.SerializedName
-import java.util.*
 
 /*    {
       "id": 315728835,
@@ -38,5 +37,5 @@ data class Repository(
     @SerializedName("created_at")
     val dateOfCreation: String,
 
-    val favorite: Boolean
+    var favorite: Boolean
 )

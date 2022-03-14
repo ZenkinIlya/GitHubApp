@@ -1,30 +1,48 @@
 package com.example.githubapp.data.dao
 
 import androidx.room.*
+import com.example.githubapp.models.db.UserRepositoryCrossRef
 import com.example.githubapp.models.db.repository.RepositoryDb
 import com.example.githubapp.models.db.user.UserDb
 import com.example.githubapp.models.db.user.UserDbWithRepositoriesDb
-import com.example.githubapp.models.db.user.UserDbWithRepositoryDb
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface RepositoriesDao {
 
-/*    @Query("SELECT * FROM repositories")
-    fun getAll(): List<RepositoryDb>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertUser(userDb: UserDb): Long
 
-    @Query("SELECT * FROM repositories WHERE name LIKE :name")
-    fun findByName(name: String): List<RepositoryDb>*/
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertRepository(repositoryDb: RepositoryDb): Long
 
-    @Insert
-    fun insert(userDb: UserDb, repositoryDb: RepositoryDb)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertUserRepositoryCrossRef(userRepositoryCrossRef: UserRepositoryCrossRef): Long
+
+    @Delete
+    fun deleteUser(userDb: UserDb): Int
+    @Query("DELETE FROM users")
+    fun deleteAllUsers(): Completable
+
+    @Delete
+    fun deleteRepository(repositoryDb: RepositoryDb): Int
+    @Delete
+    fun deleteListRepository(listRepositoryDb: List<RepositoryDb>): Int
+    @Query("DELETE FROM repositories")
+    fun deleteAllRepositories(): Completable
+
+    @Delete
+    fun deleteUserRepositoryCrossRef(userRepositoryCrossRef: UserRepositoryCrossRef): Int
+    @Query("DELETE FROM userRepositoryCrossRef WHERE email = :emailUser")
+    fun deleteUserRepositoryCrossRef(emailUser: String): Int
+    @Query("DELETE FROM userRepositoryCrossRef")
+    fun deleteAllUserRepositoryCrossRef(): Completable
 
     @Transaction
     @Query("SELECT * FROM users WHERE email = :emailUser")
     fun getUserWithRepositories(emailUser: String): UserDbWithRepositoriesDb
 
-/*    @Delete
-    fun delete(repositoryDb: RepositoryDb)
-
-    @Query("DELETE FROM comment")
-    fun deleteAll()*/
+    @Query("SELECT * FROM userRepositoryCrossRef")
+    fun getListUserRepositoryCrossRef(): List<UserRepositoryCrossRef>
 }

@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubapp.R
 import com.example.githubapp.componentManager
 import com.example.githubapp.databinding.FragmentRepositoriesSearcherBinding
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.models.viewModels.SearchViewModel
+import com.example.githubapp.presentation.repository.RepositoryClickHandler
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
@@ -21,7 +23,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repositories_searcher),
-    RepositoriesSearcherView {
+    RepositoriesSearcherView, RepositoryClickHandler {
 
     private lateinit var binding: FragmentRepositoriesSearcherBinding
     private lateinit var adapter: RepositoriesSearcherAdapter
@@ -49,7 +51,7 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
 
         initSearchObserve()
 
-        adapter = RepositoriesSearcherAdapter()
+        adapter = RepositoriesSearcherAdapter(this)
         val linearLayoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewRepositoriesSearcher.layoutManager = linearLayoutManager
         binding.recyclerViewRepositoriesSearcher.adapter = adapter
@@ -118,7 +120,11 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
         adapter.repositories = listRepository
     }
 
-    override fun markRepositoryAsSaved(repository: Repository) {
+    override fun onClickFavorite(repository: Repository) {
+        repositoriesSearchPresenter.onClickFavorite(repository)
+    }
 
+    override fun onClickRepository(repository: Repository) {
+        findNavController().navigate(R.id.action_listRepositoryFragment_to_repositoryFragment)
     }
 }

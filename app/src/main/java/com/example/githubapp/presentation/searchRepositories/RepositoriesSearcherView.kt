@@ -16,7 +16,4 @@ interface RepositoriesSearcherView: MvpView {
 
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showRepositories(listRepository: List<Repository>)
-
-    @StateStrategyType(OneExecutionStateStrategy::class)
-    fun markRepositoryAsSaved(repository: Repository)
 }

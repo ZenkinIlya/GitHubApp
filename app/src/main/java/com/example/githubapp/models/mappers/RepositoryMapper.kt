@@ -1,7 +1,6 @@
 package com.example.githubapp.models.mappers
 
 import com.example.githubapp.models.db.repository.RepositoryDb
-import com.example.githubapp.models.repository.Owner
 import com.example.githubapp.models.repository.Repository
 
 class RepositoryMapper {

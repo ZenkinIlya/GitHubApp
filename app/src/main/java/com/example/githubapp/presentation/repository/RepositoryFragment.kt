@@ -10,7 +10,7 @@ import com.example.githubapp.databinding.FragmentRepositoryBinding
 
 class RepositoryFragment : Fragment(R.layout.fragment_repository) {
 
-    lateinit var binding: FragmentRepositoryBinding
+    private lateinit var binding: FragmentRepositoryBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -20,7 +20,5 @@ class RepositoryFragment : Fragment(R.layout.fragment_repository) {
         return binding.root
     }
 
-    companion object {
-
-    }
+    companion object
 }

@@ -10,8 +10,20 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item
+        android:id="@+id/menu_delete_base"
+        android:title="@string/delete_saved"
+        android:icon="@drawable/ic_delete"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_delete_all_base"
+        android:title="@string/delete_all_saved"
+        android:icon="@drawable/ic_delete"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/menu_exit"
         android:title="@string/exit"
         android:icon="@drawable/ic_exit"
-        app:showAsAction="always"/>
+        app:showAsAction="never"/>
 </menu>

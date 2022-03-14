@@ -3,7 +3,6 @@ package com.example.githubapp.data.signIn
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.activity.result.contract.ActivityResultContract
 import com.example.githubapp.models.signIn.SignInGoogleWrapper
 import com.google.android.gms.auth.api.Auth
@@ -12,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import timber.log.Timber
 
 
 class SignInGoogleContract : ActivityResultContract<GoogleSignInClient, SignInGoogleWrapper?>() {
@@ -21,12 +21,12 @@ class SignInGoogleContract : ActivityResultContract<GoogleSignInClient, SignInGo
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): SignInGoogleWrapper? {
-        Log.i(TAG, "resultCode = $resultCode; intent = $intent")
+        Timber.i("resultCode = $resultCode; intent = $intent")
 
         if (intent == null) return null
         val signInResultFromIntent = Auth.GoogleSignInApi.getSignInResultFromIntent(intent)
         val statusCode = signInResultFromIntent?.status?.statusCode
-        Log.i(TAG, "statusCode = $statusCode")
+        Timber.i("statusCode = $statusCode")
 
         val signInGoogleWrapper = SignInGoogleWrapper(null, statusCode)
 
@@ -49,13 +49,8 @@ class SignInGoogleContract : ActivityResultContract<GoogleSignInClient, SignInGo
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             signInGoogleWrapper.statusCode = e.statusCode
-            Log.e(TAG, "handleSignInResult() : statusCode = ${signInGoogleWrapper.statusCode}")
+            Timber.e("handleSignInResult() : statusCode = ${signInGoogleWrapper.statusCode}")
             signInGoogleWrapper
         }
     }
-
-    companion object {
-        const val TAG = "tagSignInGoogleContract"
-    }
-
 }

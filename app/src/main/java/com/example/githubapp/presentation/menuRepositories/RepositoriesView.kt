@@ -1,4 +1,4 @@
-package com.example.githubapp.presentation.githubRepositories
+package com.example.githubapp.presentation.menuRepositories
 
 import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy

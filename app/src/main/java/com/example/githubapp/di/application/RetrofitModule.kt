@@ -57,7 +57,7 @@ class RetrofitModule {
     fun provideGson(): Gson {
         return GsonBuilder()
             .registerTypeAdapter(Date::class.java,
-                JsonDeserializer<Date> { json, _, _ ->
+                JsonDeserializer { json, _, _ ->
                     Date(
                         json.asJsonPrimitive.asLong
                     )

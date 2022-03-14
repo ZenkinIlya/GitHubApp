@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1f8aec0270f37a7a6c00e241c42949ae",
+    "identityHash": "e9146d59dd1e10b2cf16f90aff9a0ab2",
     "entities": [
       {
         "tableName": "users",
@@ -105,7 +105,7 @@
         "foreignKeys": []
       },
       {
-        "tableName": "UserRepositoryCrossRef",
+        "tableName": "userRepositoryCrossRef",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`email` TEXT NOT NULL, `idRepository` INTEGER NOT NULL, PRIMARY KEY(`email`, `idRepository`))",
         "fields": [
           {
@@ -128,14 +128,24 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_userRepositoryCrossRef_idRepository",
+            "unique": false,
+            "columnNames": [
+              "idRepository"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_userRepositoryCrossRef_idRepository` ON `${TABLE_NAME}` (`idRepository`)"
+          }
+        ],
         "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1f8aec0270f37a7a6c00e241c42949ae')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e9146d59dd1e10b2cf16f90aff9a0ab2')"
     ]
   }
 }

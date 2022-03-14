@@ -16,12 +16,9 @@
     </fragment>
     <fragment
         android:id="@+id/listRepositoryFragment"
-        android:name="com.example.githubapp.presentation.githubRepositories.RepositoriesFragment"
+        android:name="com.example.githubapp.presentation.menuRepositories.RepositoriesFragment"
         android:label="List repository"
         tools:layout="@layout/fragment_repositories">
-        <argument
-            android:name="type_auth"
-            app:argType="com.example.githubapp.presentation.login.TypeAuth"/>
         <action
             android:id="@+id/action_listRepositoryFragment_to_repositoryFragment"
             app:destination="@id/repositoryFragment" />

@@ -1,7 +1,7 @@
 package com.example.githubapp.di.application
 
 import com.example.githubapp.presentation.login.LoginFragment
-import com.example.githubapp.presentation.githubRepositories.RepositoriesFragment
+import com.example.githubapp.presentation.menuRepositories.RepositoriesFragment
 import com.example.githubapp.presentation.repository.RepositoryFragment
 import com.example.githubapp.presentation.savedRepositories.SavedRepositoriesFragment
 import com.example.githubapp.presentation.searchRepositories.RepositoriesSearcherFragment

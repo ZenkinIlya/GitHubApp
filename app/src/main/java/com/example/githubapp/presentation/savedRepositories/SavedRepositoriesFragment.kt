@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.example.githubapp.R
+import com.example.githubapp.componentManager
 import com.example.githubapp.databinding.FragmentSavedRepositoriesBinding
 import com.example.githubapp.models.viewModels.SearchViewModel
 import com.example.githubapp.models.repository.Repository
@@ -19,15 +20,16 @@ import javax.inject.Provider
 class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_repositories),
     SavedRepositoriesView {
 
-    lateinit var binding: FragmentSavedRepositoriesBinding
+    private lateinit var binding: FragmentSavedRepositoriesBinding
 
     @Inject
-    lateinit var providePresenter: Provider<SavedRepositoriesPresenter>
-    private val savedRepositoriesPresenter by moxyPresenter { providePresenter.get() }
+    lateinit var presenterProvider: Provider<SavedRepositoriesPresenter>
+    private val savedRepositoriesPresenter by moxyPresenter { presenterProvider.get() }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         Timber.i("onAttach()")
+        requireContext().componentManager.appComponent.inject(this)
     }
 
     override fun onCreateView(

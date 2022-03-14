@@ -1,10 +1,9 @@
-package com.example.githubapp.presentation.githubRepositories.pageAdapter
+package com.example.githubapp.presentation.menuRepositories.pageAdapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.githubapp.presentation.githubRepositories.RepositoriesFragment
 import com.example.githubapp.presentation.searchRepositories.RepositoriesSearcherFragment
 import com.example.githubapp.presentation.savedRepositories.SavedRepositoriesFragment
 

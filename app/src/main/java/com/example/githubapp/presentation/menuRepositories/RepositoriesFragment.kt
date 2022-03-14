@@ -1,8 +1,9 @@
-package com.example.githubapp.presentation.githubRepositories
+package com.example.githubapp.presentation.menuRepositories
 
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -12,7 +13,7 @@ import com.example.githubapp.data.signIn.SignInGoogleHandler
 import com.example.githubapp.databinding.FragmentRepositoriesBinding
 import com.example.githubapp.models.viewModels.SearchViewModel
 import com.example.githubapp.presentation.common.SchedulersProvider
-import com.example.githubapp.presentation.githubRepositories.pageAdapter.RepositoriesPageAdapter
+import com.example.githubapp.presentation.menuRepositories.pageAdapter.RepositoriesPageAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.ObservableOnSubscribe
@@ -151,16 +152,25 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
                 findNavController().popBackStack()
                 true
             }
+            R.id.menu_delete_base -> {
+                repositoriesPresenter.onDeleteSavedRepositories()
+                true
+            }
+            R.id.menu_delete_all_base -> {
+                repositoriesPresenter.onDeleteSavedRepositoriesByAllUsers()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
     override fun showLoading(show: Boolean) {
-        TODO("Not yet implemented")
+
     }
 
     override fun showError(error: String) {
-        TODO("Not yet implemented")
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+        Timber.e(error)
     }
 
     override fun displayViewPageRepositories(showPageSavedRepositories: Boolean) {
