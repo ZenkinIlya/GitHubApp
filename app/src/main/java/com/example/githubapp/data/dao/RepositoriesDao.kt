@@ -23,21 +23,21 @@ interface RepositoriesDao {
     @Delete
     fun deleteUser(userDb: UserDb): Int
     @Query("DELETE FROM users")
-    fun deleteAllUsers(): Completable
+    fun deleteAllUsers()
 
     @Delete
     fun deleteRepository(repositoryDb: RepositoryDb): Int
     @Delete
     fun deleteListRepository(listRepositoryDb: List<RepositoryDb>): Int
     @Query("DELETE FROM repositories")
-    fun deleteAllRepositories(): Completable
+    fun deleteAllRepositories()
 
     @Delete
     fun deleteUserRepositoryCrossRef(userRepositoryCrossRef: UserRepositoryCrossRef): Int
     @Query("DELETE FROM userRepositoryCrossRef WHERE email = :emailUser")
     fun deleteUserRepositoryCrossRef(emailUser: String): Int
     @Query("DELETE FROM userRepositoryCrossRef")
-    fun deleteAllUserRepositoryCrossRef(): Completable
+    fun deleteAllUserRepositoryCrossRef()
 
     @Transaction
     @Query("SELECT * FROM users WHERE email = :emailUser")
