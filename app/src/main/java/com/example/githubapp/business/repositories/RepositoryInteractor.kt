@@ -13,15 +13,19 @@ class RepositoryInteractor(
     private val userRepository: UserRepository
 ) {
 
-    /** Get all repositories by searchData and search saved repositories by compare
-     * with repositories from cache */
-    fun getRepositoriesWithSavedFromCache(mapSearchData: Map<String, String>): Observable<List<Repository>> {
-        return repositoriesRepository.getRepositoriesFromGithubApiService(mapSearchData)
-            //TODO Get saved repositories by current user and mark repositories from cache/api like favorite
-
-//            .concatWith(getSavedRepositories())
+    /** Get all repositories by searchData and saved repositories from database.
+     * Check if listSavedRep contains repositories from githubApi */
+    fun getRepositories(mapSearchData: Map<String, String>): Observable<List<Repository>> {
+        return Observable.zip(
+            repositoriesRepository.getRepositoriesFromGithubApiService(mapSearchData)
+                .flatMapObservable { Observable.fromIterable(it) },
+            getSavedRepositories().toObservable()
+        ) { repFromApi, listSavedRep ->
+            repFromApi.favorite = listSavedRep.contains(repFromApi)
+            return@zip repFromApi
+        }
+            .toList()
             .toObservable()
-            .subscribeOn(schedulersProvider.io())
     }
 
     /** Save repository which marked as favorite*/

@@ -7,16 +7,14 @@ import com.google.android.gms.common.api.CommonStatusCodes
 import moxy.InjectViewState
 import javax.inject.Inject
 
-@InjectViewState  // – аннотация для привязывания ViewState к Presenter
+@InjectViewState
 class LoginPresenter @Inject constructor(private val signInInteractor: SignInInteractor) :
     BasePresenter<LoginView>() {
 
-    //Этот метод вызывается тогда, когда к конкретному экземпляру Presenter первый раз будет привязана любая View
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         //Сообщает в каком состоянии находится view. Например позволяет понять нужна ли анимация или нет
         isInRestoreState(viewState)
-
     }
 
     fun onClickSignInGoogle() {

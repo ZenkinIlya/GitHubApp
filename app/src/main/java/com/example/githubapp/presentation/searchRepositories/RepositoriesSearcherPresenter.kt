@@ -16,7 +16,7 @@ class RepositoriesSearcherPresenter @Inject constructor(
 
     fun onSearchRepositories(mapSearchData: Map<String, String>) {
         val disposable: Disposable =
-            repositoryInteractor.getRepositoriesWithSavedFromCache(mapSearchData)
+            repositoryInteractor.getRepositories(mapSearchData)
                 .observeOn(schedulersProvider.ui())
                 .doOnSubscribe { viewState.showLoading(true) }
                 .subscribe(

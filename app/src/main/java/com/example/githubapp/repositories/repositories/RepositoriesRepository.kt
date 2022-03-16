@@ -88,6 +88,7 @@ class RepositoriesRepository(
         }
     }
 
+    /** Delete all tables of database. Analog: appDatabase.clearAllTables()*/
     fun deleteAllSavedRepositories(): Single<Long> {
         return Single.create {
             appDatabase.getRepositoriesDao().deleteAllUsers()

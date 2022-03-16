@@ -23,7 +23,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repositories_searcher),
-    RepositoriesSearcherView, RepositoryClickHandler {
+    RepositoriesSearcherView {
 
     private lateinit var binding: FragmentRepositoriesSearcherBinding
     private lateinit var adapter: RepositoriesSearcherAdapter
@@ -51,7 +51,16 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
 
         initSearchObserve()
 
-        adapter = RepositoriesSearcherAdapter(this)
+        adapter = RepositoriesSearcherAdapter(object : RepositoryClickHandler{
+            override fun onClickFavorite(repository: Repository) {
+                repositoriesSearchPresenter.onClickFavorite(repository)
+            }
+
+            override fun onClickRepository(repository: Repository) {
+                findNavController().navigate(R.id.action_listRepositoryFragment_to_repositoryFragment)
+            }
+
+        })
         val linearLayoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewRepositoriesSearcher.layoutManager = linearLayoutManager
         binding.recyclerViewRepositoriesSearcher.adapter = adapter
@@ -118,13 +127,5 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
     override fun showRepositories(listRepository: List<Repository>) {
         Timber.i(listRepository.toString())
         adapter.repositories = listRepository
-    }
-
-    override fun onClickFavorite(repository: Repository) {
-        repositoriesSearchPresenter.onClickFavorite(repository)
-    }
-
-    override fun onClickRepository(repository: Repository) {
-        findNavController().navigate(R.id.action_listRepositoryFragment_to_repositoryFragment)
     }
 }
