@@ -26,6 +26,7 @@ class RepositoryInteractor(
         }
             .toList()
             .toObservable()
+            .subscribeOn(schedulersProvider.io())
     }
 
     /** Save repository which marked as favorite*/
