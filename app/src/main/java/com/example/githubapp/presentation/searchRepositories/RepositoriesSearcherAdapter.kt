@@ -10,6 +10,7 @@ import com.example.githubapp.R
 import com.example.githubapp.databinding.FragmentRepositoryBinding
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.presentation.repository.RepositoryClickHandler
+import timber.log.Timber
 
 class RepositoriesSearcherAdapter(private val repositoryClickHandler: RepositoryClickHandler) :
     RecyclerView.Adapter<RepositoriesSearcherAdapter.RepositoriesViewHolder>(),
@@ -25,9 +26,7 @@ class RepositoriesSearcherAdapter(private val repositoryClickHandler: Repository
         val repository = view.tag as Repository
         when (view.id) {
             R.id.favorite_image_view -> {
-//                view as ImageView
-                repository.favorite = !repository.favorite
-                repositoryClickHandler.onClickFavorite(repository)
+                repositoryClickHandler.onClickFavorite(repository, !repository.favorite)
             }
             else -> {
                 repositoryClickHandler.onClickRepository(repository)

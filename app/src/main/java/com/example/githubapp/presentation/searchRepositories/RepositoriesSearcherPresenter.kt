@@ -21,17 +21,17 @@ class RepositoriesSearcherPresenter @Inject constructor(
                 .doOnSubscribe { viewState.showLoading(true) }
                 .subscribe(
                     { repositoryList ->
-                        viewState.showRepositories(repositoryList)
                         viewState.showLoading(false)
+                        viewState.showRepositories(repositoryList)
                     },
                     { t -> viewState.showError(t.localizedMessage) })
         unsubscribeOnDestroy(disposable)
     }
 
-    fun onClickFavorite(repository: Repository) {
-        if (repository.favorite){
+    fun onClickFavorite(repository: Repository, flagFavorite: Boolean) {
+        if (flagFavorite) {
             saveRepository(repository)
-        }else{
+        } else {
             deleteRepository(repository)
         }
     }
@@ -41,7 +41,7 @@ class RepositoriesSearcherPresenter @Inject constructor(
             repositoryInteractor.saveRepository(repository)
                 .observeOn(schedulersProvider.ui())
                 .subscribe({
-                    Timber.i("saved repository completed")
+                    Timber.i("Complete save repository with id = ${repository.id}, ref = ${System.identityHashCode(repository)}")
                 },
                     { t -> viewState.showError(t.localizedMessage) })
         unsubscribeOnDestroy(disposable)

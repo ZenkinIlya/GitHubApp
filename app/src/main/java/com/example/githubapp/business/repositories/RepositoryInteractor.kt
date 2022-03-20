@@ -24,15 +24,18 @@ class RepositoryInteractor(
                 .toObservable(),
             getSavedRepositories().toObservable()
         ) { repositoriesFromApi, savedRepositories ->
+            Timber.d("getRepositories(): savedRepositories = $savedRepositories")
             repositoriesFromApi.map { repositoryFromApi ->
+                Timber.d("getRepositories(): repositoryFromApi.id = ${repositoryFromApi.id}, " +
+                        "repositoryFromApi.favorite = ${repositoryFromApi.favorite}, " +
+                        "ref = ${System.identityHashCode(repositoryFromApi)}")
                 if (savedRepositories.contains(repositoryFromApi)) {
                     repositoryFromApi.favorite = true
+                    Timber.d("getRepositories(): favorite = ${repositoryFromApi.id}")
                 }
                 return@map repositoryFromApi
             }
-        }
-            .doOnNext { Timber.d("getRepositories(): $it") }
-            .subscribeOn(schedulersProvider.io())
+        }.subscribeOn(schedulersProvider.io())
     }
 
     /** Save repository which marked as favorite*/
@@ -46,6 +49,7 @@ class RepositoryInteractor(
     /** Get saved repositories by current user*/
     fun getSavedRepositories(): Flowable<List<Repository>> {
         return repositoriesRepository.getSavedRepositoriesFromDatabase(userRepository.getUser())
+            .doOnNext { Timber.d("getSavedRepositories(): saved repositories by ${userRepository.getUser().email} = ${it.size} $it") }
             .doOnError { t -> Timber.e("getSavedRepositories: ${t.localizedMessage}") }
             .subscribeOn(schedulersProvider.io())
     }

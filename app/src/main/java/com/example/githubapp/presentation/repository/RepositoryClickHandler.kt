@@ -4,6 +4,6 @@ import com.example.githubapp.models.repository.Repository
 
 interface RepositoryClickHandler {
 
-    fun onClickFavorite(repository: Repository)
+    fun onClickFavorite(repository: Repository, flagFavorite: Boolean)
     fun onClickRepository(repository: Repository)
 }

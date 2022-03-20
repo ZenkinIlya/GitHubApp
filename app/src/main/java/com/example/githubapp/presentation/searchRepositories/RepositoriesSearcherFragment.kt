@@ -52,8 +52,8 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
         initSearchObserve()
 
         adapter = RepositoriesSearcherAdapter(object : RepositoryClickHandler{
-            override fun onClickFavorite(repository: Repository) {
-                repositoriesSearchPresenter.onClickFavorite(repository)
+            override fun onClickFavorite(repository: Repository, flagFavorite: Boolean) {
+                repositoriesSearchPresenter.onClickFavorite(repository, flagFavorite)
             }
 
             override fun onClickRepository(repository: Repository) {
@@ -120,12 +120,11 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
     }
 
     override fun showError(error: String?) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, error, Toast.LENGTH_LONG).show()
         Timber.e(error)
     }
 
     override fun showRepositories(listRepository: List<Repository>) {
-        Timber.i(listRepository.toString())
         adapter.repositories = listRepository
     }
 }
