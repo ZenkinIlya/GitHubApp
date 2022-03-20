@@ -70,6 +70,7 @@ dependencies {
     //RxJava3
     implementation "io.reactivex.rxjava3:rxjava:$rxjava_version"
     implementation "io.reactivex.rxjava3:rxandroid:$rxandroid_version"
+    implementation "io.reactivex.rxjava3:rxkotlin:$rxkotlin_version"
 
     //ViewPager2
     implementation "androidx.viewpager2:viewpager2:$view_pager_version"

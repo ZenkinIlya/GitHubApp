@@ -41,7 +41,7 @@ class RepositoriesSearcherPresenter @Inject constructor(
             repositoryInteractor.saveRepository(repository)
                 .observeOn(schedulersProvider.ui())
                 .subscribe({
-                    Timber.i("saved repository index=${it}")
+                    Timber.i("saved repository completed")
                 },
                     { t -> viewState.showError(t.localizedMessage) })
         unsubscribeOnDestroy(disposable)
@@ -52,7 +52,7 @@ class RepositoriesSearcherPresenter @Inject constructor(
             repositoryInteractor.deleteSavedRepository(repository)
                 .observeOn(schedulersProvider.ui())
                 .subscribe({
-                    Timber.i("deleted repository index=${it}")
+                    Timber.i("deleted repository completed")
                 },
                     { t -> viewState.showError(t.localizedMessage) })
         unsubscribeOnDestroy(disposable)

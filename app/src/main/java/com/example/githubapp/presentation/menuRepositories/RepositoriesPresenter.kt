@@ -27,11 +27,10 @@ class RepositoriesPresenter @Inject constructor(
         val disposable: Disposable =
             repositoryInteractor.deleteSavedRepositories()
                 .observeOn(schedulersProvider.ui())
-                .doOnSuccess { Timber.i("Success delete saved repositories $it") }
                 .doOnError { Timber.e("Error delete saved repositories $it") }
                 .subscribe(
                     {
-                        Timber.i("Success delete saved repositories $it")
+                        Timber.i("Delete saved repositories completed")
                     },
                     { t -> viewState.showError(t.localizedMessage) })
         unsubscribeOnDestroy(disposable)

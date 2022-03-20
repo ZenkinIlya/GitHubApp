@@ -25,19 +25,8 @@ class RepositoriesSearcherAdapter(private val repositoryClickHandler: Repository
         val repository = view.tag as Repository
         when (view.id) {
             R.id.favorite_image_view -> {
-                view as ImageView
-                if (repository.favorite) {
-                    Glide.with(view.context)
-                        .load(R.drawable.ic_favorite_border)
-                        .placeholder(R.drawable.ic_favorite_border)
-                        .error(R.drawable.ic_favorite_border)
-                        .into(view)
-                    repository.favorite = false
-                } else {
-                    Glide.with(view.context).clear(view)
-                    view.setImageResource(R.drawable.ic_favorite)
-                    repository.favorite = true
-                }
+//                view as ImageView
+                repository.favorite = !repository.favorite
                 repositoryClickHandler.onClickFavorite(repository)
             }
             else -> {

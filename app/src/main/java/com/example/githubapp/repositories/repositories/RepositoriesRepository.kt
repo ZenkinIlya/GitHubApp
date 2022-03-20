@@ -3,13 +3,15 @@ package com.example.githubapp.repositories.repositories
 import com.example.githubapp.data.dao.AppDatabase
 import com.example.githubapp.data.network.GithubApiService
 import com.example.githubapp.models.db.UserRepositoryCrossRef
+import com.example.githubapp.models.db.user.UserDbWithRepositoriesDb
 import com.example.githubapp.models.mappers.RepositoryMapper
 import com.example.githubapp.models.mappers.UserMapper
 import com.example.githubapp.models.mappers.UserWithRepositoryMapper
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.models.user.User
-import io.reactivex.rxjava3.core.Single
-import kotlin.streams.toList
+import io.reactivex.rxjava3.core.*
+import io.reactivex.rxjava3.internal.operators.flowable.FlowableInternalHelper
+import timber.log.Timber
 
 class RepositoriesRepository(
     private val githubApiService: GithubApiService,
@@ -24,68 +26,93 @@ class RepositoriesRepository(
     fun getRepositoriesFromGithubApiService(mapSearchData: Map<String, String>): Single<List<Repository>> {
         return githubApiService.getRepositories(mapSearchData)
             .map { it.items }
-            .doOnSuccess { repositoryEntities ->
-                //TODO Create save in cache loaded repositories
-/*                cacheRepository.clearCache()
-                cacheRepository.putRepositories(repositoryEntities)*/
-            }
+            .doOnSuccess { Timber.d("getRepositoriesFromGithubApiService(): $it") }
+            //TODO save in cacheRepository
     }
 
     /** Save repository which marked as favorite*/
-    fun saveRepositoryInDatabase(user: User, repository: Repository): Single<Long> {
-        return Single.create {
-            val userDb = userMapper.fromUser(user)
-            val repositoryDb = repositoryMapper.fromRepository(repository)
-            val userRepositoryCrossRef = UserRepositoryCrossRef(
-                email = userDb.email,
-                idRepository = repositoryDb.idRepository
+    fun saveRepositoryInDatabase(user: User, repository: Repository): Completable {
+
+        val userDb = userMapper.fromUser(user)
+        val repositoryDb = repositoryMapper.fromRepository(repository)
+        val userRepositoryCrossRef = UserRepositoryCrossRef(
+            email = userDb.email,
+            idRepository = repositoryDb.idRepository
+        )
+
+        return appDatabase.getRepositoriesDao().insertUser(userDb)
+            .andThen(appDatabase.getRepositoriesDao().insertRepository(repositoryDb))
+            .andThen(
+                appDatabase.getRepositoriesDao()
+                    .insertUserRepositoryCrossRef(userRepositoryCrossRef)
             )
-            appDatabase.getRepositoriesDao().insertUser(userDb)
-            appDatabase.getRepositoriesDao().insertRepository(repositoryDb)
-            appDatabase.getRepositoriesDao().insertUserRepositoryCrossRef(userRepositoryCrossRef)
-        }
     }
 
-    /** Load from database all favorite repositories*/
-    fun getSavedRepositoriesFromDatabase(user: User): Single<List<Repository>> {
-        return Single.create {
-            val userWithRepositories =
-                appDatabase.getRepositoriesDao().getUserWithRepositories(user.email)
-            userWithRepositoryMapper.getListRepositoriesFromUserDbWithRepositoriesDb(userWithRepositories)
-        }
+    /** get count entries from CrossRef and load from database all favorite repositories */
+    fun getSavedRepositoriesFromDatabase(user: User): Flowable<List<Repository>> {
+        return appDatabase.getRepositoriesDao().getCountUserRepositoryCrossRef(user.email)
+            .switchMap { count ->
+                if (count > 0) {
+                    appDatabase.getRepositoriesDao().getUserWithRepositories(user.email)
+                        .map {
+                            userWithRepositoryMapper.getListRepositoriesFromUserDbWithRepositoriesDb(
+                                it
+                            )
+                        }
+                } else {
+                    Flowable.just(emptyList())
+                }
+            }
     }
 
     /** Delete all saved repositories which was saved by current user*/
-    fun deleteSavedRepositoriesByCurrentUser(user: User): Single<Long> {
-        return Single.create {
-            //Get all idRepository from CrossRef
-            val listIdRepositoryFromListUserRepositoryCrossRef =
-                appDatabase.getRepositoriesDao().getListUserRepositoryCrossRef().map { it.idRepository }.toList()
-
-            //Get all repositories which will be deleted
-            val repositoriesDbWhichWillBeDeleted =
-                appDatabase.getRepositoriesDao().getUserWithRepositories(user.email).repositoriesDb.stream()
-                    .filter { element -> listIdRepositoryFromListUserRepositoryCrossRef.count { it == element.idRepository } == 1 }
-                    .toList()
-
-            appDatabase.getRepositoriesDao().deleteUserRepositoryCrossRef(user.email)
-            appDatabase.getRepositoriesDao().deleteListRepository(repositoriesDbWhichWillBeDeleted)
-        }
+    fun deleteSavedRepositoriesByCurrentUser(user: User): Completable {
+        return appDatabase.getRepositoriesDao().getCountUserRepositoryCrossRef(user.email)
+            .switchMap { count ->
+                if (count > 0) {
+                    appDatabase.getRepositoriesDao().getListUserRepositoryCrossRef()
+                        .flatMap { listUserRepositoryCrossRef ->
+                            Flowable.fromIterable(
+                                listUserRepositoryCrossRef
+                            ).map { it.idRepository }
+                        }
+                        .toList()
+                        .toFlowable()
+                } else {
+                    Flowable.just(emptyList())
+                }
+            }
+            .flatMap { listIdRepositoryFromCrossRef ->
+                appDatabase.getRepositoriesDao().getUserWithRepositories(user.email)
+                    .map { userDbWithRepositoriesDb ->
+                        userDbWithRepositoriesDb.repositoriesDb
+                            .filter { repositoryDb -> listIdRepositoryFromCrossRef.count { it == repositoryDb.idRepository } == 1 }
+                    }
+            }
+            .map { appDatabase.getRepositoriesDao().deleteListRepository(it) }
+            .ignoreElements()
+            .andThen { appDatabase.getRepositoriesDao().deleteUserRepositoryCrossRef(user.email) }
     }
 
     /** Delete saved repository which was saved by current user*/
-    fun deleteSavedRepositoryByCurrentUser(user: User, repository: Repository): Single<Long> {
-        return Single.create {
-            //Get all idRepository from CrossRef
-            val listIdRepositoryFromListUserRepositoryCrossRef =
-                appDatabase.getRepositoriesDao().getListUserRepositoryCrossRef().map { it.idRepository }.toList()
-
-            //Check how much crossRef contains the repository.id and delete if count contains == 1
-            if (listIdRepositoryFromListUserRepositoryCrossRef.count { it == repository.id } == 1){
-                appDatabase.getRepositoriesDao().deleteRepository(repositoryMapper.fromRepository(repository))
+    fun deleteSavedRepositoryByCurrentUser(user: User, repository: Repository): Completable {
+        return appDatabase.getRepositoriesDao().getListUserRepositoryCrossRef()
+            .flatMap { listUserRepositoryCrossRef ->
+                Flowable.fromIterable(
+                    listUserRepositoryCrossRef
+                ).map { it.idRepository }
             }
-            appDatabase.getRepositoriesDao().deleteUserRepositoryCrossRef(UserRepositoryCrossRef(user.email, repository.id))
-        }
+            .toList()
+            .map { listRepositoryId -> listRepositoryId.count { it == repository.id } == 1 }
+            .map {
+                if (it) appDatabase.getRepositoriesDao()
+                    .deleteRepository(repositoryMapper.fromRepository(repository))
+            }
+            .ignoreElement()
+            .andThen {
+                appDatabase.getRepositoriesDao()
+                    .deleteUserRepositoryCrossRef(UserRepositoryCrossRef(user.email, repository.id))
+            }
     }
 
     /** Delete all tables of database. Analog: appDatabase.clearAllTables()*/
@@ -94,6 +121,7 @@ class RepositoriesRepository(
             appDatabase.getRepositoriesDao().deleteAllUsers()
             appDatabase.getRepositoriesDao().deleteAllUserRepositoryCrossRef()
             appDatabase.getRepositoriesDao().deleteAllRepositories()
+            it.setCancellable { it }
         }
     }
 }
