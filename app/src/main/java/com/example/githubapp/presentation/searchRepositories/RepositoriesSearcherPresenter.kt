@@ -28,8 +28,8 @@ class RepositoriesSearcherPresenter @Inject constructor(
         unsubscribeOnDestroy(disposable)
     }
 
-    fun onClickFavorite(repository: Repository, flagFavorite: Boolean) {
-        if (flagFavorite) {
+    fun onClickFavorite(repository: Repository) {
+        if (!repository.favorite) {
             saveRepository(repository)
         } else {
             deleteRepository(repository)

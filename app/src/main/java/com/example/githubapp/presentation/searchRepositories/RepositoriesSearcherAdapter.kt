@@ -26,7 +26,7 @@ class RepositoriesSearcherAdapter(private val repositoryClickHandler: Repository
         val repository = view.tag as Repository
         when (view.id) {
             R.id.favorite_image_view -> {
-                repositoryClickHandler.onClickFavorite(repository, !repository.favorite)
+                repositoryClickHandler.onClickFavorite(repository)
             }
             else -> {
                 repositoryClickHandler.onClickRepository(repository)
