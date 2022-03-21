@@ -29,9 +29,12 @@ class RepositoryInteractor(
                 Timber.d("getRepositories(): repositoryFromApi.id = ${repositoryFromApi.id}, " +
                         "repositoryFromApi.favorite = ${repositoryFromApi.favorite}, " +
                         "ref = ${System.identityHashCode(repositoryFromApi)}")
-                if (savedRepositories.contains(repositoryFromApi)) {
+                if (savedRepositories.any { it.id == repositoryFromApi.id }) {
                     repositoryFromApi.favorite = true
                     Timber.d("getRepositories(): favorite = ${repositoryFromApi.id}")
+                }else{
+                    repositoryFromApi.favorite = false
+                    Timber.d("getRepositories(): not favorite = ${repositoryFromApi.id}")
                 }
                 return@map repositoryFromApi
             }
