@@ -7,6 +7,7 @@ import com.example.githubapp.models.db.user.UserDb
 import com.example.githubapp.models.db.user.UserDbWithRepositoriesDb
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 
 @Dao
@@ -50,5 +51,5 @@ interface RepositoriesDao {
     fun getUserWithRepositories(emailUser: String): Flowable<UserDbWithRepositoriesDb>
     /** Get all table userRepositoryCrossRef*/
     @Query("SELECT * FROM userRepositoryCrossRef")
-    fun getListUserRepositoryCrossRef(): Flowable<List<UserRepositoryCrossRef>>
+    fun getListUserRepositoryCrossRef(): Single<List<UserRepositoryCrossRef>>
 }

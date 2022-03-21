@@ -76,15 +76,19 @@ class RepositoriesRepository(
             .doOnNext { Timber.d("deleteSavedRepositoriesByCurrentUser(): countUserRepositoryCrossRef = $it") }
             .switchMap { count ->
                 if (count > 0) {
+                    Timber.d("deleteSavedRepositoriesByCurrentUser(): count > 0")
                     appDatabase.getRepositoriesDao().getListUserRepositoryCrossRef()
+                        .doOnSuccess { Timber.d("deleteSavedRepositoriesByCurrentUser(): listUserRepositoryCrossRef = $it") }
                         .flatMap { listUserRepositoryCrossRef ->
-                            Flowable.fromIterable(
+                            Observable.fromIterable(
                                 listUserRepositoryCrossRef
-                            ).map { it.idRepository }
+                            )
+                                .map { it.idRepository }
+                                .toList()
                         }
-                        .toList()
                         .toFlowable()
                 } else {
+                    Timber.d("deleteSavedRepositoriesByCurrentUser(): count =< 0")
                     Flowable.just(emptyList())
                 }
             }
@@ -107,17 +111,22 @@ class RepositoriesRepository(
     /** Delete saved repository which was saved by current user*/
     fun deleteSavedRepositoryByCurrentUser(user: User, repository: Repository): Completable {
         return appDatabase.getRepositoriesDao().getListUserRepositoryCrossRef()
-            .doOnNext { Timber.d("deleteSavedRepositoryByCurrentUser(): listUserRepositoryCrossRef = $it") }
+            .doOnSuccess { Timber.d("deleteSavedRepositoryByCurrentUser(): listUserRepositoryCrossRef = $it") }
             .flatMap { listUserRepositoryCrossRef ->
-                Flowable.fromIterable(
+                Observable.fromIterable(
                     listUserRepositoryCrossRef
-                ).map { it.idRepository }
+                )
+                    .map { it.idRepository }
+                    .toList()
             }
-            .toList()
             .doOnSuccess { Timber.d("deleteSavedRepositoryByCurrentUser(): id repositories from database = $it") }
             .doOnSuccess { Timber.d("deleteSavedRepositoryByCurrentUser(): delete id repository = ${repository.id}") }
-            .map { listRepositoryId -> listRepositoryId.count { it == repository.id } == 1 }
+            .map { listRepositoryId ->
+                Timber.d("deleteSavedRepositoryByCurrentUser(): listRepositoryId = $listRepositoryId")
+                listRepositoryId.count { it == repository.id } == 1
+            }
             .map {
+                Timber.d("deleteSavedRepositoryByCurrentUser(): can we delete = $it")
                 if (it) appDatabase.getRepositoriesDao()
                     .deleteRepository(repositoryMapper.fromRepository(repository))
             }
