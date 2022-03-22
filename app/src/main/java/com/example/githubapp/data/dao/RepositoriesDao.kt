@@ -30,7 +30,7 @@ interface RepositoriesDao {
     @Delete
     fun deleteRepository(repositoryDb: RepositoryDb): Completable
     @Delete
-    fun deleteListRepository(listRepositoryDb: List<RepositoryDb>?): Completable
+    fun deleteListRepository(listRepositoryDb: List<RepositoryDb>): Completable
     @Query("DELETE FROM repositories")
     fun deleteAllRepositories()
 

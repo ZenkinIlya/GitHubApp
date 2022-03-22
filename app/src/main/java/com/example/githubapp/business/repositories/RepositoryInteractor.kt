@@ -26,16 +26,11 @@ class RepositoryInteractor(
         ) { repositoriesFromApi, savedRepositories ->
             Timber.d("getRepositories(): savedRepositories = $savedRepositories")
             repositoriesFromApi.map { repositoryFromApi ->
-                Timber.d("getRepositories(): repositoryFromApi.id = ${repositoryFromApi.id}, " +
-                        "repositoryFromApi.favorite = ${repositoryFromApi.favorite}, " +
+                repositoryFromApi.favorite = savedRepositories.any { it.id == repositoryFromApi.id }
+                Timber.d("getRepositories(): repositoryFromApi: ${repositoryFromApi.id}, " +
+                        "name = ${repositoryFromApi.name}, " +
+                        "favorite = ${repositoryFromApi.favorite}, " +
                         "ref = ${System.identityHashCode(repositoryFromApi)}")
-                if (savedRepositories.any { it.id == repositoryFromApi.id }) {
-                    repositoryFromApi.favorite = true
-                    Timber.d("getRepositories(): favorite = ${repositoryFromApi.id}")
-                }else{
-                    repositoryFromApi.favorite = false
-                    Timber.d("getRepositories(): not favorite = ${repositoryFromApi.id}")
-                }
                 return@map repositoryFromApi
             }
         }.subscribeOn(schedulersProvider.io())

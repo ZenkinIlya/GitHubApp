@@ -70,44 +70,6 @@ class RepositoriesRepository(
             }
     }
 
-    /** Delete all saved repositories which was saved by current user*/
-    fun deleteSavedRepositoriesByCurrentUser(user: User): Completable {
-        return appDatabase.getRepositoriesDao().getCountUserRepositoryCrossRef(user.email)
-            .doOnNext { Timber.d("deleteSavedRepositoriesByCurrentUser(): countUserRepositoryCrossRef = $it") }
-            .switchMap { count ->
-                if (count > 0) {
-                    Timber.d("deleteSavedRepositoriesByCurrentUser(): count > 0")
-                    appDatabase.getRepositoriesDao().getListUserRepositoryCrossRef()
-                        .doOnSuccess { Timber.d("deleteSavedRepositoriesByCurrentUser(): listUserRepositoryCrossRef = $it") }
-                        .flatMap { listUserRepositoryCrossRef ->
-                            Observable.fromIterable(
-                                listUserRepositoryCrossRef
-                            )
-                                .map { it.idRepository }
-                                .toList()
-                        }
-                        .toFlowable()
-                } else {
-                    Timber.d("deleteSavedRepositoriesByCurrentUser(): count =< 0")
-                    Flowable.just(emptyList())
-                }
-            }
-            .doOnNext { Timber.d("getSavedRepositoriesFromDatabase(): id repositories from database = $it") }
-            .flatMap { listIdRepositoryFromCrossRef ->
-                appDatabase.getRepositoriesDao().getUserWithRepositories(user.email)
-                    .map { userDbWithRepositoriesDb ->
-                        userDbWithRepositoriesDb.repositoriesDb
-                            .filter { repositoryDb -> listIdRepositoryFromCrossRef.count { it == repositoryDb.idRepository } == 1 }
-                    }
-            }
-            .doOnNext { Timber.d("getSavedRepositoriesFromDatabase(): list repository for delete = $it") }
-            .map {
-                appDatabase.getRepositoriesDao().deleteListRepository(it).andThen(
-                    appDatabase.getRepositoriesDao().deleteUserRepositoryCrossRef(user.email)
-                )
-            }.ignoreElements()
-    }
-
     /** Delete saved repository which was saved by current user*/
     fun deleteSavedRepositoryByCurrentUser(user: User, repository: Repository): Completable {
         return appDatabase.getRepositoriesDao().getListUserRepositoryCrossRef()
@@ -119,14 +81,13 @@ class RepositoriesRepository(
                     .map { it.idRepository }
                     .toList()
             }
-            .doOnSuccess { Timber.d("deleteSavedRepositoryByCurrentUser(): id repositories from database = $it") }
+            .doOnSuccess { Timber.d("deleteSavedRepositoryByCurrentUser(): all id repositories from crossRef = ${it.sorted()}") }
             .doOnSuccess { Timber.d("deleteSavedRepositoryByCurrentUser(): delete id repository = ${repository.id}") }
             .map { listRepositoryId ->
-                Timber.d("deleteSavedRepositoryByCurrentUser(): listRepositoryId = $listRepositoryId")
                 listRepositoryId.count { it == repository.id } == 1
             }
             .map {
-                Timber.d("deleteSavedRepositoryByCurrentUser(): can we delete = $it")
+                Timber.d("deleteSavedRepositoryByCurrentUser(): can we delete from repository table = $it")
                 if (it) appDatabase.getRepositoriesDao()
                     .deleteRepository(repositoryMapper.fromRepository(repository))
             }
@@ -137,13 +98,49 @@ class RepositoriesRepository(
             )
     }
 
+    /** Delete all saved repositories which was saved by current user*/
+    fun deleteSavedRepositoriesByCurrentUser(user: User): Completable {
+        return appDatabase.getRepositoriesDao().getCountUserRepositoryCrossRef(user.email)
+            .switchMap { count ->
+                Timber.d("deleteSavedRepositoriesByCurrentUser(): countUserRepositoryCrossRef = $count")
+                if (count > 0) {
+                    appDatabase.getRepositoriesDao().getListUserRepositoryCrossRef()
+                        .doOnSuccess { Timber.d("deleteSavedRepositoriesByCurrentUser(): listUserRepositoryCrossRef = $it") }
+                        .flatMap { listUserRepositoryCrossRef ->
+                            Observable.fromIterable(
+                                listUserRepositoryCrossRef
+                            )
+                                .map { it.idRepository }
+                                .toList()
+                        }
+                        .toFlowable()
+                } else {
+                    Flowable.just(emptyList())
+                }
+            }
+            .doOnNext { Timber.d("deleteSavedRepositoriesByCurrentUser(): id repositories from database = $it") }
+            .flatMap { listIdRepositoryFromCrossRef ->
+                appDatabase.getRepositoriesDao().getUserWithRepositories(user.email)
+                    .map { userDbWithRepositoriesDb ->
+                        userDbWithRepositoriesDb.repositoriesDb
+                            .filter { repositoryDb -> listIdRepositoryFromCrossRef.count { it == repositoryDb.idRepository } == 1 }
+                    }
+            }
+            .doOnNext { Timber.d("deleteSavedRepositoriesByCurrentUser(): list repository for delete = ${it.map { rep -> rep.idRepository }}") }
+            .doOnNext {
+                Timber.d("deleteSavedRepositoriesByCurrentUser(): list repository for delete = $it")
+                appDatabase.getRepositoriesDao().deleteUserRepositoryCrossRef(user.email)
+                appDatabase.getRepositoriesDao().deleteListRepository(it)/*.andThen(
+                    )*/
+            }.ignoreElements()
+    }
+
     /** Delete all tables of database. Analog: appDatabase.clearAllTables()*/
     fun deleteAllSavedRepositories(): Single<Long> {
         return Single.create {
             appDatabase.getRepositoriesDao().deleteAllUsers()
             appDatabase.getRepositoriesDao().deleteAllUserRepositoryCrossRef()
             appDatabase.getRepositoriesDao().deleteAllRepositories()
-            it.setCancellable { it }
         }
     }
 }
