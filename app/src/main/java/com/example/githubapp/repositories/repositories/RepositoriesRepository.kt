@@ -26,7 +26,7 @@ class RepositoriesRepository(
     fun getRepositoriesFromGithubApiService(mapSearchData: Map<String, String>): Single<List<Repository>> {
         return githubApiService.getRepositories(mapSearchData)
             .map { it.items }
-            .doOnSuccess { Timber.d("getRepositoriesFromGithubApiService(): $it") }
+            .doOnSuccess { Timber.d("getRepositoriesFromGithubApiService(): repositories from API = ${it.size} ${it.map { rep -> rep.id }}") }
         //TODO save in cacheRepository
     }
 
@@ -52,20 +52,24 @@ class RepositoriesRepository(
     }
 
     /** get count entries from CrossRef and load from database all favorite repositories */
-    fun getSavedRepositoriesFromDatabase(user: User): Flowable<List<Repository>> {
+    fun getSavedRepositoriesFromDatabase(user: User): Observable<List<Repository>> {
         return appDatabase.getRepositoriesDao().getCountUserRepositoryCrossRef(user.email)
-            .doOnNext { Timber.d("getSavedRepositoriesFromDatabase(): countUserRepositoryCrossRef = $it") }
+            .doOnNext { Timber.d("getSavedRepositoriesFromDatabase(): #1 countUserRepositoryCrossRef = $it") }
+            .toObservable()
             .switchMap { count ->
+                Timber.d("getSavedRepositoriesFromDatabase(): #2 $count")
                 if (count > 0) {
+                    Timber.d("getSavedRepositoriesFromDatabase(): #3 $count")
                     appDatabase.getRepositoriesDao().getUserWithRepositories(user.email)
-                        .doOnNext { Timber.d("getSavedRepositoriesFromDatabase(): saved repositories by ${user.email} = ${it.repositoriesDb}") }
+                        .doOnSuccess { Timber.d("getSavedRepositoriesFromDatabase(): #4 saved repositories by ${user.email} = ${it.repositoriesDb.size}") }
                         .map {
                             userWithRepositoryMapper.getListRepositoriesFromUserDbWithRepositoriesDb(
                                 it
                             )
                         }
+                        .toObservable()
                 } else {
-                    Flowable.just(emptyList())
+                    Observable.just(emptyList())
                 }
             }
     }
@@ -101,11 +105,12 @@ class RepositoriesRepository(
     /** Delete all saved repositories which was saved by current user*/
     fun deleteSavedRepositoriesByCurrentUser(user: User): Completable {
         return appDatabase.getRepositoriesDao().getCountUserRepositoryCrossRef(user.email)
+            .toObservable()
             .switchMap { count ->
                 Timber.d("deleteSavedRepositoriesByCurrentUser(): countUserRepositoryCrossRef = $count")
                 if (count > 0) {
                     appDatabase.getRepositoriesDao().getListUserRepositoryCrossRef()
-                        .doOnSuccess { Timber.d("deleteSavedRepositoriesByCurrentUser(): listUserRepositoryCrossRef = $it") }
+                        .doOnSuccess { Timber.d("deleteSavedRepositoriesByCurrentUser(): listUserRepositoryCrossRef all = ${it.size}") }
                         .flatMap { listUserRepositoryCrossRef ->
                             Observable.fromIterable(
                                 listUserRepositoryCrossRef
@@ -113,31 +118,33 @@ class RepositoriesRepository(
                                 .map { it.idRepository }
                                 .toList()
                         }
-                        .toFlowable()
+                        .toObservable()
                 } else {
-                    Flowable.just(emptyList())
+                    Observable.just(emptyList())
                 }
             }
-            .doOnNext { Timber.d("deleteSavedRepositoriesByCurrentUser(): id repositories from database = $it") }
+            .doOnNext { Timber.d("deleteSavedRepositoriesByCurrentUser(): all id repositories from database = $it") }
             .flatMap { listIdRepositoryFromCrossRef ->
                 appDatabase.getRepositoriesDao().getUserWithRepositories(user.email)
                     .map { userDbWithRepositoriesDb ->
                         userDbWithRepositoriesDb.repositoriesDb
                             .filter { repositoryDb -> listIdRepositoryFromCrossRef.count { it == repositoryDb.idRepository } == 1 }
                     }
+                    .toObservable()
             }
             .doOnNext { Timber.d("deleteSavedRepositoriesByCurrentUser(): list repository for delete = ${it.map { rep -> rep.idRepository }}") }
-            .doOnNext {
-                Timber.d("deleteSavedRepositoriesByCurrentUser(): list repository for delete = $it")
-                appDatabase.getRepositoriesDao().deleteUserRepositoryCrossRef(user.email)
-                appDatabase.getRepositoriesDao().deleteListRepository(it)/*.andThen(
-                    )*/
-            }.ignoreElements()
+            .map { listRepositoryDb ->
+                appDatabase.getRepositoriesDao().deleteListRepository(listRepositoryDb).andThen(
+                    appDatabase.getRepositoriesDao().deleteUserRepositoryCrossRef(user.email)
+                )
+            }
+            .ignoreElements()
     }
 
     /** Delete all tables of database. Analog: appDatabase.clearAllTables()*/
     fun deleteAllSavedRepositories(): Single<Long> {
         return Single.create {
+            Timber.d("deleteAllSavedRepositories(): delete all saved repositories")
             appDatabase.getRepositoriesDao().deleteAllUsers()
             appDatabase.getRepositoriesDao().deleteAllUserRepositoryCrossRef()
             appDatabase.getRepositoriesDao().deleteAllRepositories()

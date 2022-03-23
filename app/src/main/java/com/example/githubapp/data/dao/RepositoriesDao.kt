@@ -48,7 +48,7 @@ interface RepositoriesDao {
     /** Get object UserDbWithRepositoriesDb which contains user (with emailUser) and relevant repositories*/
     @Transaction
     @Query("SELECT * FROM users WHERE email = :emailUser")
-    fun getUserWithRepositories(emailUser: String): Flowable<UserDbWithRepositoriesDb>
+    fun getUserWithRepositories(emailUser: String): Single<UserDbWithRepositoriesDb>
     /** Get all table userRepositoryCrossRef*/
     @Query("SELECT * FROM userRepositoryCrossRef")
     fun getListUserRepositoryCrossRef(): Single<List<UserRepositoryCrossRef>>

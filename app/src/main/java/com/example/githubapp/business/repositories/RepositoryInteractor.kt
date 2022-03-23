@@ -22,15 +22,15 @@ class RepositoryInteractor(
         return Observable.combineLatest(
             repositoriesRepository.getRepositoriesFromGithubApiService(mapSearchData)
                 .toObservable(),
-            getSavedRepositories().toObservable()
+            getSavedRepositories()
         ) { repositoriesFromApi, savedRepositories ->
-            Timber.d("getRepositories(): savedRepositories = $savedRepositories")
+            Timber.d("getRepositories(): #6 savedRepositories = ${savedRepositories.size} ${savedRepositories.map { it.id }}")
             repositoriesFromApi.map { repositoryFromApi ->
                 repositoryFromApi.favorite = savedRepositories.any { it.id == repositoryFromApi.id }
-                Timber.d("getRepositories(): repositoryFromApi: ${repositoryFromApi.id}, " +
+/*                Timber.d("getRepositories(): repositoryFromApi: ${repositoryFromApi.id}, " +
                         "name = ${repositoryFromApi.name}, " +
                         "favorite = ${repositoryFromApi.favorite}, " +
-                        "ref = ${System.identityHashCode(repositoryFromApi)}")
+                        "ref = ${System.identityHashCode(repositoryFromApi)}")*/
                 return@map repositoryFromApi
             }
         }.subscribeOn(schedulersProvider.io())
@@ -45,9 +45,9 @@ class RepositoryInteractor(
     }
 
     /** Get saved repositories by current user*/
-    fun getSavedRepositories(): Flowable<List<Repository>> {
+    fun getSavedRepositories(): Observable<List<Repository>> {
         return repositoriesRepository.getSavedRepositoriesFromDatabase(userRepository.getUser())
-            .doOnNext { Timber.d("getSavedRepositories(): saved repositories by ${userRepository.getUser().email} = ${it.size} $it") }
+            .doOnNext { Timber.d("getSavedRepositories(): #5 saved repositories by ${userRepository.getUser().email} = ${it.size}") }
             .doOnError { t -> Timber.e("getSavedRepositories: ${t.localizedMessage}") }
             .subscribeOn(schedulersProvider.io())
     }

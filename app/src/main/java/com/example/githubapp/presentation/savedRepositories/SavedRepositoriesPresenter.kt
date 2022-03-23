@@ -25,8 +25,7 @@ class SavedRepositoriesPresenter @Inject constructor(
                         viewState.showRepositories(repositoryList)
                         viewState.showLoading(false)
                     },
-                    { t -> viewState.showError(t.localizedMessage) },
-                    { Timber.i("repositoryInteractor.getSavedRepositories() completed")})
+                    { t -> viewState.showError(t.localizedMessage) })
         unsubscribeOnDestroy(disposable, 1)
     }
 
