@@ -27,7 +27,7 @@ class SavedRepositoriesPresenter @Inject constructor(
                     },
                     { t -> viewState.showError(t.localizedMessage) },
                     { Timber.i("repositoryInteractor.getSavedRepositories() completed")})
-        unsubscribeOnDestroy(disposable)
+        unsubscribeOnDestroy(disposable, 1)
     }
 
 }

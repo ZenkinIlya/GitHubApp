@@ -33,7 +33,7 @@ class RepositoriesPresenter @Inject constructor(
                         Timber.i("Delete saved repositories completed")
                     },
                     { t -> viewState.showError(t.localizedMessage) })
-        unsubscribeOnDestroy(disposable)
+        unsubscribeOnDestroy(disposable, 2)
     }
 
     fun onDeleteSavedRepositoriesByAllUsers() {
@@ -47,6 +47,6 @@ class RepositoriesPresenter @Inject constructor(
                         Timber.i("Success delete saved repositories by all users $it")
                     },
                     { t -> viewState.showError(t.localizedMessage) })
-        unsubscribeOnDestroy(disposable)
+        unsubscribeOnDestroy(disposable, 3)
     }
 }

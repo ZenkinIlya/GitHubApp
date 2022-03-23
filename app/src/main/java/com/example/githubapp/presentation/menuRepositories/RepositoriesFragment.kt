@@ -81,6 +81,7 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
 
     override fun onDestroyOptionsMenu() {
         super.onDestroyOptionsMenu()
+        compositeDisposable.clear()
         Timber.i("onDestroyOptionsMenu()")
     }
 
@@ -91,7 +92,6 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
 
     override fun onDestroy() {
         super.onDestroy()
-        compositeDisposable.clear()
         Timber.i("onDestroy()")
     }
 

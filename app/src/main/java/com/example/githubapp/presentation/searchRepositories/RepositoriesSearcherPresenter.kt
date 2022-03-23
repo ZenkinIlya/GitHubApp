@@ -25,7 +25,7 @@ class RepositoriesSearcherPresenter @Inject constructor(
                         viewState.showRepositories(repositoryList)
                     },
                     { t -> viewState.showError(t.localizedMessage) })
-        unsubscribeOnDestroy(disposable)
+        unsubscribeOnDestroy(disposable, 4)
     }
 
     fun onClickFavorite(repository: Repository) {
@@ -44,7 +44,7 @@ class RepositoriesSearcherPresenter @Inject constructor(
                     Timber.i("Complete save repository with id = ${repository.id}, ref = ${System.identityHashCode(repository)}")
                 },
                     { t -> viewState.showError(t.localizedMessage) })
-        unsubscribeOnDestroy(disposable)
+        unsubscribeOnDestroy(disposable, 5)
     }
 
     private fun deleteRepository(repository: Repository) {
@@ -55,6 +55,6 @@ class RepositoriesSearcherPresenter @Inject constructor(
                     Timber.i("deleted repository completed")
                 },
                     { t -> viewState.showError(t.localizedMessage) })
-        unsubscribeOnDestroy(disposable)
+        unsubscribeOnDestroy(disposable, 6)
     }
 }
