@@ -24,8 +24,8 @@ class RepositoryInteractor(
                 .toObservable().take(1),
             getSavedRepositories()
         ) { repositoriesFromApi, savedRepositories ->
-            Timber.d("getRepositories(): #6 repositoriesFromApi = ${repositoriesFromApi.size} ${repositoriesFromApi.map { it.id }}")
-            Timber.d("getRepositories(): #7 savedRepositories = ${savedRepositories.size} ${savedRepositories.map { it.id }}")
+            Timber.d("getRepositories(): #5 repositoriesFromApi = ${repositoriesFromApi.size} ${repositoriesFromApi.map { it.id }}")
+            Timber.d("getRepositories(): #6 savedRepositories = ${savedRepositories.size} ${savedRepositories.map { it.id }}")
             repositoriesFromApi.map { repositoryFromApi ->
                 repositoryFromApi.favorite = savedRepositories.any { it.id == repositoryFromApi.id }
 /*                Timber.d("getRepositories(): repositoryFromApi: ${repositoryFromApi.id}, " +
@@ -48,7 +48,7 @@ class RepositoryInteractor(
     /** Get saved repositories by current user*/
     fun getSavedRepositories(): Observable<List<Repository>> {
         return repositoriesRepository.getSavedRepositoriesFromDatabase(userRepository.getUser())
-            .doOnNext { Timber.d("getSavedRepositories(): #5 saved repositories by ${userRepository.getUser().email} = ${it.size}") }
+            .doOnNext { Timber.d("getSavedRepositories(): #4 saved repositories by ${userRepository.getUser().email} = ${it.size}") }
             .doOnError { t -> Timber.e("getSavedRepositories: ${t.localizedMessage}") }
             .subscribeOn(schedulersProvider.io())
     }
@@ -68,7 +68,7 @@ class RepositoryInteractor(
     }
 
     /** Delete all saved repositories by all users*/
-    fun deleteSavedRepositoriesByAllUsers(): Single<Long> {
+    fun deleteSavedRepositoriesByAllUsers(): Completable {
         return repositoriesRepository.deleteAllSavedRepositories()
             .subscribeOn(schedulersProvider.io())
     }

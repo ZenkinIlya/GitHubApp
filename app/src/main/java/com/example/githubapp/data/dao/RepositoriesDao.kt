@@ -25,27 +25,27 @@ interface RepositoriesDao {
     @Delete
     fun deleteUser(userDb: UserDb): Completable
     @Query("DELETE FROM users")
-    fun deleteAllUsers()
+    fun deleteAllUsers(): Completable
 
     @Delete
     fun deleteRepository(repositoryDb: RepositoryDb): Completable
     @Delete
     fun deleteListRepository(listRepositoryDb: List<RepositoryDb>): Completable
     @Query("DELETE FROM repositories")
-    fun deleteAllRepositories()
+    fun deleteAllRepositories(): Completable
 
     @Delete
     fun deleteUserRepositoryCrossRef(userRepositoryCrossRef: UserRepositoryCrossRef): Completable
     @Query("DELETE FROM userRepositoryCrossRef WHERE email = :emailUser")
     fun deleteUserRepositoryCrossRef(emailUser: String): Completable
     @Query("DELETE FROM userRepositoryCrossRef")
-    fun deleteAllUserRepositoryCrossRef()
+    fun deleteAllUserRepositoryCrossRef(): Completable
 
 
-    /** Get count entries in userRepositoryCrossRef which have emailUser*/
+    /** Flowable: get count entries in userRepositoryCrossRef which have emailUser*/
     @Query("SELECT COUNT(*) FROM userRepositoryCrossRef WHERE email = :emailUser")
     fun getCountUserRepositoryCrossRefListener(emailUser: String): Flowable<Int>
-    /** Get count entries in userRepositoryCrossRef which have emailUser*/
+    /** Single: get count entries in userRepositoryCrossRef which have emailUser*/
     @Query("SELECT COUNT(*) FROM userRepositoryCrossRef WHERE email = :emailUser")
     fun getCountUserRepositoryCrossRef(emailUser: String): Single<Int>
     /** Get object UserDbWithRepositoriesDb which contains user (with emailUser) and relevant repositories*/

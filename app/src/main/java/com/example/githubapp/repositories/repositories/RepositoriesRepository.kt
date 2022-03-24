@@ -26,7 +26,7 @@ class RepositoriesRepository(
     fun getRepositoriesFromGithubApiService(mapSearchData: Map<String, String>): Single<List<Repository>> {
         return githubApiService.getRepositories(mapSearchData)
             .map { it.items }
-            .doOnSuccess { Timber.d("getRepositoriesFromGithubApiService(): repositories from API = ${it.size} ${it.map { rep -> rep.id }}") }
+            .doOnSuccess { Timber.d("getRepositoriesFromGithubApiService(): repositories \"$mapSearchData\" from API = ${it.size} ${it.map { rep -> rep.id }}") }
         //TODO save in cacheRepository
     }
 
@@ -59,9 +59,8 @@ class RepositoriesRepository(
             .switchMap { count ->
                 Timber.d("getSavedRepositoriesFromDatabase(): #2 $count")
                 if (count > 0) {
-                    Timber.d("getSavedRepositoriesFromDatabase(): #3 $count")
                     appDatabase.getRepositoriesDao().getUserWithRepositories(user.email)
-                        .doOnSuccess { Timber.d("getSavedRepositoriesFromDatabase(): #4 saved repositories by ${user.email} = ${it.repositoriesDb.size}") }
+                        .doOnSuccess { Timber.d("getSavedRepositoriesFromDatabase(): #3 saved repositories by ${user.email} = ${it.repositoriesDb.size}") }
                         .map {
                             userWithRepositoryMapper.getListRepositoriesFromUserDbWithRepositoriesDb(
                                 it
@@ -90,23 +89,17 @@ class RepositoriesRepository(
             .map { listRepositoryId ->
                 listRepositoryId.count { it == repository.id } == 1
             }
-            .map {
+            .flatMapCompletable {
                 Timber.d("deleteSavedRepositoryByCurrentUser(): can we delete from repository table = $it")
                 if (it) appDatabase.getRepositoriesDao()
                     .deleteRepository(repositoryMapper.fromRepository(repository))
-                Timber.d(
-                    "deleteSavedRepositoryByCurrentUser(): deleteRepository = ${
-                        repositoryMapper.fromRepository(
-                            repository
-                        )
-                    }"
-                )
+                else Completable.complete()
             }
-            .ignoreElement()
             .andThen(
                 appDatabase.getRepositoriesDao()
                     .deleteUserRepositoryCrossRef(UserRepositoryCrossRef(user.email, repository.id))
             )
+            .doOnComplete { Timber.d("deleteSavedRepositoryByCurrentUser(): deleted repository = ${repositoryMapper.fromRepository(repository)}") }
     }
 
     /** Delete all saved repositories which was saved by current user*/
@@ -133,17 +126,16 @@ class RepositoriesRepository(
                     }
             }
             .doOnSuccess { Timber.d("deleteSavedRepositoriesByCurrentUser(): list repository for delete = ${it.map { rep -> rep.idRepository }}") }
-            .flatMapCompletable { listRepositoryDb -> appDatabase.getRepositoriesDao().deleteListRepository(listRepositoryDb) }
+            .flatMapCompletable { listRepositoryDb ->
+                appDatabase.getRepositoriesDao().deleteListRepository(listRepositoryDb)
+            }
             .andThen(appDatabase.getRepositoriesDao().deleteUserRepositoryCrossRef(user.email))
     }
 
     /** Delete all tables of database. Analog: appDatabase.clearAllTables()*/
-    fun deleteAllSavedRepositories(): Single<Long> {
-        return Single.create {
-            Timber.d("deleteAllSavedRepositories(): delete all saved repositories")
-            appDatabase.getRepositoriesDao().deleteAllUsers()
-            appDatabase.getRepositoriesDao().deleteAllUserRepositoryCrossRef()
-            appDatabase.getRepositoriesDao().deleteAllRepositories()
-        }
+    fun deleteAllSavedRepositories(): Completable {
+        return appDatabase.getRepositoriesDao().deleteAllUsers()
+            .andThen(appDatabase.getRepositoriesDao().deleteAllUserRepositoryCrossRef())
+            .andThen(appDatabase.getRepositoriesDao().deleteAllRepositories())
     }
 }
