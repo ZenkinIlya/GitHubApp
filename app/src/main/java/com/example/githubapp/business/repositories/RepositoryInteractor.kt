@@ -21,10 +21,11 @@ class RepositoryInteractor(
     fun getRepositories(mapSearchData: Map<String, String>): Observable<List<Repository>> {
         return Observable.combineLatest(
             repositoriesRepository.getRepositoriesFromGithubApiService(mapSearchData)
-                .toObservable(),
+                .toObservable().take(1),
             getSavedRepositories()
         ) { repositoriesFromApi, savedRepositories ->
-            Timber.d("getRepositories(): #6 savedRepositories = ${savedRepositories.size} ${savedRepositories.map { it.id }}")
+            Timber.d("getRepositories(): #6 repositoriesFromApi = ${repositoriesFromApi.size} ${repositoriesFromApi.map { it.id }}")
+            Timber.d("getRepositories(): #7 savedRepositories = ${savedRepositories.size} ${savedRepositories.map { it.id }}")
             repositoriesFromApi.map { repositoryFromApi ->
                 repositoryFromApi.favorite = savedRepositories.any { it.id == repositoryFromApi.id }
 /*                Timber.d("getRepositories(): repositoryFromApi: ${repositoryFromApi.id}, " +

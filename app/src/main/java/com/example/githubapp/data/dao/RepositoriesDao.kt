@@ -44,7 +44,10 @@ interface RepositoriesDao {
 
     /** Get count entries in userRepositoryCrossRef which have emailUser*/
     @Query("SELECT COUNT(*) FROM userRepositoryCrossRef WHERE email = :emailUser")
-    fun getCountUserRepositoryCrossRef(emailUser: String): Flowable<Int>
+    fun getCountUserRepositoryCrossRefListener(emailUser: String): Flowable<Int>
+    /** Get count entries in userRepositoryCrossRef which have emailUser*/
+    @Query("SELECT COUNT(*) FROM userRepositoryCrossRef WHERE email = :emailUser")
+    fun getCountUserRepositoryCrossRef(emailUser: String): Single<Int>
     /** Get object UserDbWithRepositoriesDb which contains user (with emailUser) and relevant repositories*/
     @Transaction
     @Query("SELECT * FROM users WHERE email = :emailUser")
