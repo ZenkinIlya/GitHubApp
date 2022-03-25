@@ -51,7 +51,6 @@ class RepositoryInteractor(
                 listSavedRepositories.filter { repository ->
                     return@filter repository.name.contains(mapSearchData["q"].toString(), ignoreCase = true)
                 }
-                return@map listSavedRepositories
             }
             .doOnNext { Timber.d("getSavedRepositories(): #5 filtered saved repositories by ${userRepository.getUser().email} = ${it.size}") }
             .doOnError { t -> Timber.e("getSavedRepositories: ${t.localizedMessage}") }
