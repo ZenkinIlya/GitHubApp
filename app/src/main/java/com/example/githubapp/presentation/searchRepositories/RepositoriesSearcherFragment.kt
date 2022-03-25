@@ -14,6 +14,7 @@ import com.example.githubapp.componentManager
 import com.example.githubapp.databinding.FragmentRepositoriesSearcherBinding
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.models.viewModels.SearchViewModel
+import com.example.githubapp.presentation.adapters.RepositoriesAdapter
 import com.example.githubapp.presentation.repository.RepositoryClickHandler
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import moxy.MvpAppCompatFragment
@@ -26,7 +27,7 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
     RepositoriesSearcherView {
 
     private lateinit var binding: FragmentRepositoriesSearcherBinding
-    private lateinit var adapter: RepositoriesSearcherAdapter
+    private lateinit var adapter: RepositoriesAdapter
 
     @Inject
     lateinit var presenterProvider: Provider<RepositoriesSearcherPresenter>
@@ -51,7 +52,7 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
 
         initSearchObserve()
 
-        adapter = RepositoriesSearcherAdapter(object : RepositoryClickHandler{
+        adapter = RepositoriesAdapter(object : RepositoryClickHandler{
             override fun onClickFavorite(repository: Repository) {
                 repositoriesSearchPresenter.onClickFavorite(repository)
             }

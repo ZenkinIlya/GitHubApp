@@ -66,6 +66,10 @@ class RepositoriesRepository(
                                 it
                             )
                         }
+                        .map { listSavedRepositories ->
+                            listSavedRepositories.forEach { it.favorite = true }
+                            return@map listSavedRepositories
+                        }
                         .toObservable()
                 } else {
                     Observable.just(emptyList())
@@ -99,7 +103,15 @@ class RepositoriesRepository(
                 appDatabase.getRepositoriesDao()
                     .deleteUserRepositoryCrossRef(UserRepositoryCrossRef(user.email, repository.id))
             )
-            .doOnComplete { Timber.d("deleteSavedRepositoryByCurrentUser(): deleted repository = ${repositoryMapper.fromRepository(repository)}") }
+            .doOnComplete {
+                Timber.d(
+                    "deleteSavedRepositoryByCurrentUser(): deleted repository = ${
+                        repositoryMapper.fromRepository(
+                            repository
+                        )
+                    }"
+                )
+            }
     }
 
     /** Delete all saved repositories which was saved by current user*/

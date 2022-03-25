@@ -1,6 +1,7 @@
 package com.example.githubapp.presentation.savedRepositories
 
 import com.example.githubapp.business.repositories.RepositoryInteractor
+import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.presentation.common.BasePresenter
 import com.example.githubapp.presentation.common.SchedulersProvider
 import io.reactivex.rxjava3.disposables.Disposable
@@ -12,12 +13,9 @@ class SavedRepositoriesPresenter @Inject constructor(
     private val schedulersProvider: SchedulersProvider
 ) : BasePresenter<SavedRepositoriesView>() {
 
-    fun onSearchSavedRepositories(nameRepository: String?) {
-    }
-
-    fun onGetFavoriteRepositories(){
+    fun onGetFavoriteRepositories(mapSearchData: Map<String, String>){
         val disposable: Disposable =
-            repositoryInteractor.getSavedRepositories()
+            repositoryInteractor.getSavedRepositories(mapSearchData)
                 .observeOn(schedulersProvider.ui())
                 .doOnSubscribe { viewState.showLoading(true) }
                 .subscribe(
@@ -27,6 +25,21 @@ class SavedRepositoriesPresenter @Inject constructor(
                     },
                     { t -> viewState.showError(t.localizedMessage) })
         unsubscribeOnDestroy(disposable, 1)
+    }
+
+    fun onClickFavorite(repository: Repository) {
+        deleteRepository(repository)
+    }
+
+    private fun deleteRepository(repository: Repository) {
+        val disposable: Disposable =
+            repositoryInteractor.deleteSavedRepository(repository)
+                .observeOn(schedulersProvider.ui())
+                .subscribe({
+                    Timber.i("deleted repository completed")
+                },
+                    { t -> viewState.showError(t.localizedMessage) })
+        unsubscribeOnDestroy(disposable, 7)
     }
 
 }

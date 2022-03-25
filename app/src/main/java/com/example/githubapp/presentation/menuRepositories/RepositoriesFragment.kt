@@ -13,7 +13,7 @@ import com.example.githubapp.data.signIn.SignInGoogleHandler
 import com.example.githubapp.databinding.FragmentRepositoriesBinding
 import com.example.githubapp.models.viewModels.SearchViewModel
 import com.example.githubapp.presentation.common.SchedulersProvider
-import com.example.githubapp.presentation.menuRepositories.pageAdapter.RepositoriesPageAdapter
+import com.example.githubapp.presentation.adapters.RepositoriesPageAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.ObservableOnSubscribe

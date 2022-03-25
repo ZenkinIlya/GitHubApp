@@ -5,12 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubapp.R
 import com.example.githubapp.componentManager
 import com.example.githubapp.databinding.FragmentSavedRepositoriesBinding
 import com.example.githubapp.models.viewModels.SearchViewModel
 import com.example.githubapp.models.repository.Repository
+import com.example.githubapp.presentation.adapters.RepositoriesAdapter
+import com.example.githubapp.presentation.repository.RepositoryClickHandler
+import com.google.android.material.progressindicator.BaseProgressIndicator
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 import timber.log.Timber
@@ -21,6 +27,7 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
     SavedRepositoriesView {
 
     private lateinit var binding: FragmentSavedRepositoriesBinding
+    private lateinit var adapter: RepositoriesAdapter
 
     @Inject
     lateinit var presenterProvider: Provider<SavedRepositoriesPresenter>
@@ -44,10 +51,22 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Timber.i("onViewCreated()")
-        val searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
-        searchViewModel.getQuery().observe(viewLifecycleOwner) {
-            savedRepositoriesPresenter.onSearchSavedRepositories(it)
-        }
+
+        initSearchObserve()
+
+        adapter = RepositoriesAdapter(object : RepositoryClickHandler {
+            override fun onClickFavorite(repository: Repository) {
+                savedRepositoriesPresenter.onClickFavorite(repository)
+            }
+
+            override fun onClickRepository(repository: Repository) {
+                findNavController().navigate(R.id.action_listRepositoryFragment_to_repositoryFragment)
+            }
+
+        })
+        val linearLayoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewSavedRepositories.layoutManager = linearLayoutManager
+        binding.recyclerViewSavedRepositories.adapter = adapter
     }
 
     override fun onStart() {
@@ -85,19 +104,30 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
         Timber.i("onDetach()")
     }
 
+    private fun initSearchObserve() {
+        val searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
+        searchViewModel.getQuery().observe(viewLifecycleOwner) {
+            savedRepositoriesPresenter.onGetFavoriteRepositories(mapOf("q" to it))
+        }
+    }
+
     override fun showLoading(show: Boolean) {
-        TODO("Not yet implemented")
+        if (show) {
+            binding.progressIndicator.showAnimationBehavior = BaseProgressIndicator.SHOW_OUTWARD
+            binding.progressIndicator.visibility = View.VISIBLE
+        } else {
+            binding.progressIndicator.setVisibilityAfterHide(View.INVISIBLE)
+            binding.progressIndicator.hideAnimationBehavior = BaseProgressIndicator.HIDE_OUTWARD
+            binding.progressIndicator.hide()
+        }
     }
 
     override fun showError(error: String) {
-        TODO("Not yet implemented")
+        Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+        Timber.e(error)
     }
 
     override fun showRepositories(listRepository: List<Repository>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun markRepositoryAsSaved(repository: Repository) {
-        TODO("Not yet implemented")
+        adapter.repositories = listRepository
     }
 }

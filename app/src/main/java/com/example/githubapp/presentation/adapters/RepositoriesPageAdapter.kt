@@ -1,4 +1,4 @@
-package com.example.githubapp.presentation.menuRepositories.pageAdapter
+package com.example.githubapp.presentation.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

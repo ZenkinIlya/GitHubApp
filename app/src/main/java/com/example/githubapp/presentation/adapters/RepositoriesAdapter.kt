@@ -1,19 +1,17 @@
-package com.example.githubapp.presentation.searchRepositories
+package com.example.githubapp.presentation.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.githubapp.R
 import com.example.githubapp.databinding.FragmentRepositoryBinding
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.presentation.repository.RepositoryClickHandler
-import timber.log.Timber
 
-class RepositoriesSearcherAdapter(private val repositoryClickHandler: RepositoryClickHandler) :
-    RecyclerView.Adapter<RepositoriesSearcherAdapter.RepositoriesViewHolder>(),
+class RepositoriesAdapter(private val repositoryClickHandler: RepositoryClickHandler) :
+    RecyclerView.Adapter<RepositoriesAdapter.RepositoriesViewHolder>(),
     View.OnClickListener {
 
     var repositories: List<Repository> = emptyList()
