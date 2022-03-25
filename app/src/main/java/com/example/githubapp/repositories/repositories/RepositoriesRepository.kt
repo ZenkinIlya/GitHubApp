@@ -24,8 +24,16 @@ class RepositoriesRepository(
 
     /** Get repositories from githubApi service with save in cache*/
     fun getRepositoriesFromGithubApiService(mapSearchData: Map<String, String>): Single<List<Repository>> {
-        return githubApiService.getRepositories(mapSearchData)
-            .map { it.items }
+        return Single.just(mapSearchData)
+            .map { it["q"].toString().isNotBlank() }
+            .flatMap { flag ->
+                if (flag) {
+                    githubApiService.getRepositories(mapSearchData)
+                        .map { it.items }
+                } else {
+                    Single.just(emptyList())
+                }
+            }
             .doOnSuccess { Timber.d("getRepositoriesFromGithubApiService(): repositories \"$mapSearchData\" from API = ${it.size} ${it.map { rep -> rep.id }}") }
         //TODO save in cacheRepository
     }

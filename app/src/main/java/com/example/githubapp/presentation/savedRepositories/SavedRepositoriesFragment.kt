@@ -67,6 +67,8 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
         val linearLayoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewSavedRepositories.layoutManager = linearLayoutManager
         binding.recyclerViewSavedRepositories.adapter = adapter
+
+        savedRepositoriesPresenter.onGetFavoriteRepositories(emptyMap())
     }
 
     override fun onStart() {

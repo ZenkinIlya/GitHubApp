@@ -134,7 +134,6 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
             //debounce(timeout, unit, Schedulers.computation())
             .debounce(500, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
-            .filter { text -> text.isNotBlank() }
             .observeOn(schedulersProvider.ui())
             .doOnNext { searchViewModel.setQuery(it) }
             .subscribe(

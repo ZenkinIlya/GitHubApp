@@ -47,9 +47,15 @@ class RepositoryInteractor(
     fun getSavedRepositories(mapSearchData: Map<String, String>): Observable<List<Repository>> {
         return repositoriesRepository.getSavedRepositoriesFromDatabase(userRepository.getUser())
             .doOnNext { Timber.d("getSavedRepositories(): #4 saved repositories by ${userRepository.getUser().email} = ${it.size}") }
-            .map { listSavedRepositories ->
-                listSavedRepositories.filter { repository ->
-                    return@filter repository.name.contains(mapSearchData["q"].toString(), ignoreCase = true)
+            .switchMap { listSavedRepositories ->
+                Timber.d("getSavedRepositories(): #4 isNotBlank ${mapSearchData["q"].toString().isNotBlank()}")
+                if (!mapSearchData["q"].isNullOrBlank()){
+                    Observable.fromIterable(listSavedRepositories)
+                        .filter { repository -> repository.name.contains(mapSearchData["q"].toString(), ignoreCase = true) }
+                        .toList()
+                        .toObservable()
+                }else{
+                    Observable.just(listSavedRepositories)
                 }
             }
             .doOnNext { Timber.d("getSavedRepositories(): #5 filtered saved repositories by ${userRepository.getUser().email} = ${it.size}") }
