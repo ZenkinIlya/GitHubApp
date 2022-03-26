@@ -21,6 +21,7 @@ class RepositoriesSearcherPresenter @Inject constructor(
                 .doOnSubscribe { viewState.showLoading(true) }
                 .subscribe(
                     { repositoryList ->
+                        Timber.i("found repositories retrieved")
                         viewState.showLoading(false)
                         viewState.showRepositories(repositoryList)
                     },
@@ -41,7 +42,7 @@ class RepositoriesSearcherPresenter @Inject constructor(
             repositoryInteractor.saveRepository(repository)
                 .observeOn(schedulersProvider.ui())
                 .subscribe({
-                    Timber.i("Complete save repository with id = ${repository.id}, ref = ${System.identityHashCode(repository)}")
+                    Timber.i("save repository with id = ${repository.id}, ref = ${System.identityHashCode(repository)} completed")
                 },
                     { t -> viewState.showError(t.localizedMessage) })
         unsubscribeOnDestroy(disposable, 5)
@@ -52,7 +53,7 @@ class RepositoriesSearcherPresenter @Inject constructor(
             repositoryInteractor.deleteSavedRepository(repository)
                 .observeOn(schedulersProvider.ui())
                 .subscribe({
-                    Timber.i("deleted repository completed")
+                    Timber.i("delete repository completed")
                 },
                     { t -> viewState.showError(t.localizedMessage) })
         unsubscribeOnDestroy(disposable, 6)

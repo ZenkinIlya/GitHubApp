@@ -20,6 +20,7 @@ class SavedRepositoriesPresenter @Inject constructor(
                 .doOnSubscribe { viewState.showLoading(true) }
                 .subscribe(
                     { repositoryList ->
+                        Timber.i("saved repositories retrieved")
                         viewState.showRepositories(repositoryList)
                         viewState.showLoading(false)
                     },

@@ -62,13 +62,12 @@ class RepositoriesRepository(
     /** get count entries from CrossRef and load from database all favorite repositories */
     fun getSavedRepositoriesFromDatabase(user: User): Observable<List<Repository>> {
         return appDatabase.getRepositoriesDao().getCountUserRepositoryCrossRefListener(user.email)
-            .doOnNext { Timber.d("getSavedRepositoriesFromDatabase(): #1 countUserRepositoryCrossRef = $it") }
+            .doOnNext { Timber.d("getSavedRepositoriesFromDatabase(): #1 count UserRepositoryCrossRef by ${user.email} = $it") }
             .toObservable()
             .switchMap { count ->
-                Timber.d("getSavedRepositoriesFromDatabase(): #2 $count")
                 if (count > 0) {
                     appDatabase.getRepositoriesDao().getUserWithRepositories(user.email)
-                        .doOnSuccess { Timber.d("getSavedRepositoriesFromDatabase(): #3 saved repositories by ${user.email} = ${it.repositoriesDb.size}") }
+                        .doOnSuccess { Timber.d("getSavedRepositoriesFromDatabase(): #2 saved repositories by ${user.email} = ${it.repositoriesDb.size}") }
                         .map {
                             userWithRepositoryMapper.getListRepositoriesFromUserDbWithRepositoriesDb(
                                 it
@@ -88,7 +87,7 @@ class RepositoriesRepository(
     /** Delete saved repository which was saved by current user*/
     fun deleteSavedRepositoryByCurrentUser(user: User, repository: Repository): Completable {
         return appDatabase.getRepositoriesDao().getListUserRepositoryCrossRef()
-            .doOnSuccess { Timber.d("deleteSavedRepositoryByCurrentUser(): listUserRepositoryCrossRef = $it") }
+            .doOnSuccess { Timber.d("deleteSavedRepositoryByCurrentUser(): all listUserRepositoryCrossRef by ${user.email} = $it") }
             .flatMap { listUserRepositoryCrossRef ->
                 Observable.fromIterable(
                     listUserRepositoryCrossRef
@@ -125,11 +124,11 @@ class RepositoriesRepository(
     /** Delete all saved repositories which was saved by current user*/
     fun deleteSavedRepositoriesByCurrentUser(user: User): Completable {
         return appDatabase.getRepositoriesDao().getCountUserRepositoryCrossRef(user.email)
-            .doOnSuccess { Timber.d("deleteSavedRepositoriesByCurrentUser(): countUserRepositoryCrossRef = $it") }
+            .doOnSuccess { Timber.d("deleteSavedRepositoriesByCurrentUser(): count UserRepositoryCrossRef by ${user.email} = $it") }
             .flatMap { count ->
                 if (count > 0) {
                     appDatabase.getRepositoriesDao().getListUserRepositoryCrossRef()
-                        .doOnSuccess { Timber.d("deleteSavedRepositoriesByCurrentUser(): listUserRepositoryCrossRef all = ${it.size}") }
+                        .doOnSuccess { Timber.d("deleteSavedRepositoriesByCurrentUser(): all listUserRepositoryCrossRef = ${it.size}") }
                         .flatMap { listUserRepositoryCrossRef ->
                             Single.just(listUserRepositoryCrossRef.map { it.idRepository })
                         }
@@ -137,7 +136,7 @@ class RepositoriesRepository(
                     Single.just(emptyList())
                 }
             }
-            .doOnSuccess { Timber.d("deleteSavedRepositoriesByCurrentUser(): all id repositories from database = $it") }
+            .doOnSuccess { Timber.d("deleteSavedRepositoriesByCurrentUser(): all id repositories from crossRef = $it") }
             .flatMap { listIdRepositoryFromCrossRef ->
                 appDatabase.getRepositoriesDao().getUserWithRepositories(user.email)
                     .map { userDbWithRepositoriesDb ->

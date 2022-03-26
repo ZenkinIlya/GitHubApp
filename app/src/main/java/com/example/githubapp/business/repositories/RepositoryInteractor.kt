@@ -22,8 +22,8 @@ class RepositoryInteractor(
                 .toObservable(),
             getSavedRepositories(mapSearchData)
         ) { repositoriesFromApi, savedRepositories ->
-            Timber.d("getRepositories(): #6 repositoriesFromApi = ${repositoriesFromApi.size} ${repositoriesFromApi.map { it.id }}")
-            Timber.d("getRepositories(): #7 savedRepositories = ${savedRepositories.size} ${savedRepositories.map { it.id }}")
+            Timber.d("getRepositories(): #5 repositoriesFromApi = ${repositoriesFromApi.size} ${repositoriesFromApi.map { it.id }}")
+            Timber.d("getRepositories(): #6 savedRepositories = ${savedRepositories.size} ${savedRepositories.map { it.id }}")
             repositoriesFromApi.map { repositoryFromApi ->
                 repositoryFromApi.favorite = savedRepositories.any { it.id == repositoryFromApi.id }
 /*                Timber.d("getRepositories(): repositoryFromApi: ${repositoryFromApi.id}, " +
@@ -46,9 +46,8 @@ class RepositoryInteractor(
     /** Get saved repositories by current user*/
     fun getSavedRepositories(mapSearchData: Map<String, String>): Observable<List<Repository>> {
         return repositoriesRepository.getSavedRepositoriesFromDatabase(userRepository.getUser())
-            .doOnNext { Timber.d("getSavedRepositories(): #4 saved repositories by ${userRepository.getUser().email} = ${it.size}") }
+            .doOnNext { Timber.d("getSavedRepositories(): #3 saved repositories by ${userRepository.getUser().email} = ${it.size}") }
             .switchMap { listSavedRepositories ->
-                Timber.d("getSavedRepositories(): #4 isNotBlank ${mapSearchData["q"].toString().isNotBlank()}")
                 if (!mapSearchData["q"].isNullOrBlank()){
                     Observable.fromIterable(listSavedRepositories)
                         .filter { repository -> repository.name.contains(mapSearchData["q"].toString(), ignoreCase = true) }
@@ -58,7 +57,7 @@ class RepositoryInteractor(
                     Observable.just(listSavedRepositories)
                 }
             }
-            .doOnNext { Timber.d("getSavedRepositories(): #5 filtered saved repositories by ${userRepository.getUser().email} = ${it.size}") }
+            .doOnNext { Timber.d("getSavedRepositories(): #4 filtered saved repositories by ${userRepository.getUser().email} = ${it.size}") }
             .doOnError { t -> Timber.e("getSavedRepositories: ${t.localizedMessage}") }
             .subscribeOn(schedulersProvider.io())
     }
