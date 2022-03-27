@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubapp.R
 import com.example.githubapp.componentManager
+import com.example.githubapp.data.Const.USER
 import com.example.githubapp.databinding.FragmentRepositoriesSearcherBinding
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.models.viewModels.SearchViewModel
@@ -26,6 +28,7 @@ import javax.inject.Provider
 class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repositories_searcher),
     RepositoriesSearcherView {
 
+    private val authorized: Boolean = false
     private lateinit var binding: FragmentRepositoriesSearcherBinding
     private lateinit var adapter: RepositoriesAdapter
 
@@ -35,7 +38,13 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        Timber.i("onAttach()")
         requireContext().componentManager.appComponent.inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Timber.i("onCreate()")
     }
 
     override fun onCreateView(
@@ -43,28 +52,19 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Timber.i("onCreateView()")
         binding = FragmentRepositoriesSearcherBinding.inflate(inflater, container, false)
+
+        repositoriesSearchPresenter.init()
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Timber.i("onViewCreated()")
 
         initSearchObserve()
-
-        adapter = RepositoriesAdapter(object : RepositoryClickHandler{
-            override fun onClickFavorite(repository: Repository) {
-                repositoriesSearchPresenter.onClickFavorite(repository)
-            }
-
-            override fun onClickRepository(repository: Repository) {
-                findNavController().navigate(R.id.action_listRepositoryFragment_to_repositoryFragment)
-            }
-
-        })
-        val linearLayoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewRepositoriesSearcher.layoutManager = linearLayoutManager
-        binding.recyclerViewRepositoriesSearcher.adapter = adapter
     }
 
     override fun onStart() {
@@ -127,5 +127,22 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
 
     override fun showRepositories(listRepository: List<Repository>) {
         adapter.repositories = listRepository
+    }
+
+    override fun displayFavoriteRepositories(authorized: Boolean) {
+        adapter = RepositoriesAdapter(object : RepositoryClickHandler{
+            override fun onClickFavorite(repository: Repository) {
+                repositoriesSearchPresenter.onClickFavorite(repository)
+            }
+
+            override fun onClickRepository(repository: Repository) {
+                findNavController().navigate(R.id.action_listRepositoryFragment_to_repositoryFragment)
+            }
+
+        }, authorized)
+
+        val linearLayoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewRepositoriesSearcher.layoutManager = linearLayoutManager
+        binding.recyclerViewRepositoriesSearcher.adapter = adapter
     }
 }

@@ -29,6 +29,7 @@ import javax.inject.Provider
 class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories),
     RepositoriesView {
 
+    private var showMenuItems: Boolean = false
     private lateinit var binding: FragmentRepositoriesBinding
 
     @Inject
@@ -62,7 +63,6 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
         super.onViewCreated(view, savedInstanceState)
         Timber.i("onViewCreated()")
         setHasOptionsMenu(true)
-        repositoriesPresenter.init()
     }
     override fun onStart() {
         super.onStart()
@@ -98,6 +98,12 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
     override fun onDetach() {
         super.onDetach()
         Timber.i("onDetach()")
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        menu.findItem(R.id.menu_delete_base).isVisible = showMenuItems
+        menu.findItem(R.id.menu_delete_all_base).isVisible = showMenuItems
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -172,13 +178,13 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
         Timber.e(error)
     }
 
-    override fun displayViewPageRepositories(showPageSavedRepositories: Boolean) {
-        Timber.d("displayViewPageRepositories(): $showPageSavedRepositories")
+    override fun displayViewPageRepositories(authorized: Boolean) {
+        Timber.d("displayViewPageRepositories(): $authorized")
         val repositoriesPageAdapter =
             RepositoriesPageAdapter(
                 childFragmentManager,
                 viewLifecycleOwner.lifecycle,
-                showPageSavedRepositories
+                authorized
             )
         binding.viewPager2.adapter = repositoriesPageAdapter
         TabLayoutMediator(binding.tabLayout, binding.viewPager2) { tab, position ->
@@ -187,5 +193,8 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
                 else -> tab.text = getString(R.string.saved)
             }
         }.attach()
+
+        showMenuItems = authorized
+        activity?.invalidateOptionsMenu()
     }
 }

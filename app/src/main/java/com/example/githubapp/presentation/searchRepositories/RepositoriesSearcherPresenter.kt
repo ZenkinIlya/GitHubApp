@@ -1,6 +1,8 @@
 package com.example.githubapp.presentation.searchRepositories
 
+import com.example.githubapp.business.google.SignInInteractor
 import com.example.githubapp.business.repositories.RepositoryInteractor
+import com.example.githubapp.data.Const
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.presentation.common.BasePresenter
 import com.example.githubapp.presentation.common.SchedulersProvider
@@ -10,9 +12,15 @@ import javax.inject.Inject
 
 class RepositoriesSearcherPresenter @Inject constructor(
     private val repositoryInteractor: RepositoryInteractor,
-    private val schedulersProvider: SchedulersProvider
+    private val schedulersProvider: SchedulersProvider,
+    private val signInInteractor: SignInInteractor
 ) :
     BasePresenter<RepositoriesSearcherView>() {
+
+    fun init() {
+        val currentUser = signInInteractor.getCurrentUser()
+        viewState.displayFavoriteRepositories(currentUser.email != Const.DEFAULT_EMAIL)
+    }
 
     fun onSearchRepositories(mapSearchData: Map<String, String>) {
         val disposable: Disposable =

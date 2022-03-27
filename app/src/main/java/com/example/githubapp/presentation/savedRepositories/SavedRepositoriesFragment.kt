@@ -63,7 +63,7 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
                 findNavController().navigate(R.id.action_listRepositoryFragment_to_repositoryFragment)
             }
 
-        })
+        }, true)
         val linearLayoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewSavedRepositories.layoutManager = linearLayoutManager
         binding.recyclerViewSavedRepositories.adapter = adapter

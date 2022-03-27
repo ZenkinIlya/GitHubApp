@@ -9,8 +9,12 @@ import com.example.githubapp.R
 import com.example.githubapp.databinding.FragmentRepositoryBinding
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.presentation.repository.RepositoryClickHandler
+import timber.log.Timber
 
-class RepositoriesAdapter(private val repositoryClickHandler: RepositoryClickHandler) :
+class RepositoriesAdapter(
+    private val repositoryClickHandler: RepositoryClickHandler,
+    private val authorized: Boolean
+) :
     RecyclerView.Adapter<RepositoriesAdapter.RepositoriesViewHolder>(),
     View.OnClickListener {
 
@@ -68,16 +72,19 @@ class RepositoriesAdapter(private val repositoryClickHandler: RepositoryClickHan
             stars.text = repository.stars_count.toString()
             dateOfCreation.text = repository.dateOfCreation
 
-            if (repository.favorite) {
-                Glide.with(favoriteImageView.context)
-                    .load(R.drawable.ic_favorite)
-                    .placeholder(R.drawable.ic_favorite_border)
-                    .error(R.drawable.ic_favorite_border)
-                    .into(favoriteImageView)
-            } else {
-                Glide.with(favoriteImageView.context).clear(favoriteImageView)
-                favoriteImageView.setImageResource(R.drawable.ic_favorite_border)
+            if (authorized){
+                if (repository.favorite) {
+                    Glide.with(favoriteImageView.context)
+                        .load(R.drawable.ic_favorite)
+                        .placeholder(R.drawable.ic_favorite_border)
+                        .error(R.drawable.ic_favorite_border)
+                        .into(favoriteImageView)
+                } else {
+                    Glide.with(favoriteImageView.context).clear(favoriteImageView)
+                    favoriteImageView.setImageResource(R.drawable.ic_favorite_border)
+                }
             }
+
         }
     }
 
