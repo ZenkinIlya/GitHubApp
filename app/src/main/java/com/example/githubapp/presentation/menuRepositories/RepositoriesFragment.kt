@@ -65,6 +65,7 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
         Timber.i("onViewCreated()")
         setHasOptionsMenu(true)
     }
+
     override fun onStart() {
         super.onStart()
         Timber.i("onStart()")
@@ -116,7 +117,7 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
         searchView.queryHint = "Type here to search"
 
         val searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
-        if (searchViewModel.getQuery().value != null){
+        if (searchViewModel.getQuery().value != null) {
             findItem.expandActionView()
             searchView.clearFocus()
             Timber.d("searchViewModel.getQuery().value=${searchViewModel.getQuery().value}")

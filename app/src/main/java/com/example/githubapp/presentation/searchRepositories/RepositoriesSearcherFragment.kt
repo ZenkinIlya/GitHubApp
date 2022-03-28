@@ -130,7 +130,7 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
     }
 
     override fun displayFavoriteRepositories(authorized: Boolean) {
-        adapter = RepositoriesAdapter(object : RepositoryClickHandler{
+        adapter = RepositoriesAdapter(object : RepositoryClickHandler {
             override fun onClickFavorite(repository: Repository) {
                 repositoriesSearchPresenter.onClickFavorite(repository)
             }
