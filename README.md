@@ -1,6 +1,7 @@
 # Github App
 <p align="center">
-    ![Screenshot](forReadme/signIn.jpg)
+    [<img alt="alt_text" width="40px" src="forReadme/signIn.jpg" />]
+    ![Screenshot](https://raw.githubusercontent.com/ZenkinIlya/GitHubApp/main/forReadme/signIn.jpg)
     ![Screenshot](forReadme/search.jpg)
     ![Screenshot](forReadme/saved.jpg)
 </p>
