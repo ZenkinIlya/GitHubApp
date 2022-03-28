@@ -56,6 +56,7 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
     ): View {
         Timber.i("onCreateView()")
         binding = FragmentRepositoriesBinding.inflate(inflater, container, false)
+        repositoriesPresenter.init()
         return binding.root
     }
 
