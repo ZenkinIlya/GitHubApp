@@ -8,7 +8,7 @@
 ## About
 
 Demo app, that allows get repositories from github and save them on phone. Also user can authorize by google or sign in without authorization.
-App was created within [task][a link](https://raw.githubusercontent.com/ZenkinIlya/GitHubApp/blob/main/forReadme/Task.pdf)
+App was created within [a relative link](/forReadme/Task.pdf)
 
 This repository contains a detailed sample app that implements MVP architecture in Kotlin using Dagger2, Room, RxJava, Moxy, Retrofit, single Activity, navigation component.
 <br>
