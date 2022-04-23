@@ -24,6 +24,7 @@ class RepositoriesRepository(
 
     /** Get repositories from githubApi service with save in cache*/
     fun getRepositoriesFromGithubApiService(mapSearchData: Map<String, String>): Single<List<Repository>> {
+        Timber.w("getRepositoriesFromGithubApiService()")
         return Single.just(mapSearchData)
             .map { it["q"].toString().isNotBlank() }
             .flatMap { flag ->
@@ -60,11 +61,10 @@ class RepositoriesRepository(
     }
 
     /** get count entries from CrossRef and load from database all favorite repositories */
-    fun getSavedRepositoriesFromDatabase(user: User): Observable<List<Repository>> {
+    fun getSavedRepositoriesFromDatabase(user: User): Single<List<Repository>> {
         return appDatabase.getRepositoriesDao().getCountUserRepositoryCrossRef(user.email)
             .doOnSuccess { Timber.d("getSavedRepositoriesFromDatabase(): #1 count UserRepositoryCrossRef by ${user.email} = $it") }
-            .toObservable()
-            .switchMap { count ->
+            .flatMap { count ->
                 if (count > 0) {
                     appDatabase.getRepositoriesDao().getUserWithRepositories(user.email)
                         .doOnSuccess { Timber.d("getSavedRepositoriesFromDatabase(): #2 saved repositories by ${user.email} = ${it.repositoriesDb.size}") }
@@ -77,9 +77,8 @@ class RepositoriesRepository(
                             listSavedRepositories.forEach { it.favorite = true }
                             return@map listSavedRepositories
                         }
-                        .toObservable()
                 } else {
-                    Observable.just(emptyList())
+                    Single.just(emptyList())
                 }
             }
     }
@@ -156,5 +155,28 @@ class RepositoriesRepository(
         return appDatabase.getRepositoriesDao().deleteAllUsers()
             .andThen(appDatabase.getRepositoriesDao().deleteAllUserRepositoryCrossRef())
             .andThen(appDatabase.getRepositoriesDao().deleteAllRepositories())
+    }
+
+    fun getCurrentRepositoriesFromDatabase(user: User): Observable<List<Repository>> {
+        return appDatabase.getRepositoriesDao().getCountUserRepositoryCrossRefListener(user.email)
+            .doOnNext { Timber.d("getCurrentRepositoriesFromDatabase(): count UserRepositoryCrossRef by ${user.email} = $it") }
+            .toObservable()
+            .switchMap { count ->
+                if (count > 0) {
+                    appDatabase.getRepositoriesDao().getUserWithRepositories(user.email)
+                        .doOnSuccess { Timber.d("getCurrentRepositoriesFromDatabase(): saved repositories by ${user.email} = ${it.repositoriesDb.size}") }
+                        .map {
+                            userWithRepositoryMapper.getListRepositoriesFromUserDbWithRepositoriesDb(
+                                it
+                            )
+                        }
+                        .map { listSavedRepositories ->
+                            listSavedRepositories.forEach { it.favorite = true }
+                            return@map listSavedRepositories
+                        }.toObservable()
+                } else {
+                    Observable.just(emptyList())
+                }
+            }
     }
 }

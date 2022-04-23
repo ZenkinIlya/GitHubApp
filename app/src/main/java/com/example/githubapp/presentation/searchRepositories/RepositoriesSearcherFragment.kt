@@ -6,13 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubapp.R
 import com.example.githubapp.componentManager
-import com.example.githubapp.data.Const.USER
 import com.example.githubapp.databinding.FragmentRepositoriesSearcherBinding
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.models.viewModels.SearchViewModel
@@ -144,5 +142,9 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
         val linearLayoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewRepositoriesSearcher.layoutManager = linearLayoutManager
         binding.recyclerViewRepositoriesSearcher.adapter = adapter
+    }
+
+    override fun updateRepositories(listRepository: List<Repository>) {
+        adapter.repositories = adapter.updateRepositories(listRepository)
     }
 }

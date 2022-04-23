@@ -19,4 +19,7 @@ interface RepositoriesSearcherView: MvpView {
 
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun displayFavoriteRepositories(authorized: Boolean)
+
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun updateRepositories(listRepository: List<Repository>)
 }

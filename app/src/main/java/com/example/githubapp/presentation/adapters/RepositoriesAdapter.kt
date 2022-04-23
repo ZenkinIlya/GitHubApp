@@ -3,13 +3,13 @@ package com.example.githubapp.presentation.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.githubapp.R
 import com.example.githubapp.databinding.FragmentRepositoryBinding
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.presentation.repository.RepositoryClickHandler
-import timber.log.Timber
 
 class RepositoriesAdapter(
     private val repositoryClickHandler: RepositoryClickHandler,
@@ -20,8 +20,10 @@ class RepositoriesAdapter(
 
     var repositories: List<Repository> = emptyList()
         set(newValue) {
+            val calculateDiff =
+                DiffUtil.calculateDiff(RepositoriesDiffUtils(field, newValue), false)
             field = newValue
-            notifyDataSetChanged()
+            calculateDiff.dispatchUpdatesTo(this)
         }
 
     override fun onClick(view: View) {
@@ -72,7 +74,7 @@ class RepositoriesAdapter(
             stars.text = repository.stars_count.toString()
             dateOfCreation.text = repository.dateOfCreation
 
-            if (authorized){
+            if (authorized) {
                 if (repository.favorite) {
                     Glide.with(favoriteImageView.context)
                         .load(R.drawable.ic_favorite)
@@ -90,6 +92,37 @@ class RepositoriesAdapter(
 
     override fun getItemCount(): Int = repositories.size
 
+    fun updateRepositories(favoriteRepositories: List<Repository>): List<Repository> {
+        //TODO Optimize update repositories
+        val currentRepositories = repositories.map { it.copy() }
+        currentRepositories.forEach { repository ->
+            repository.favorite = favoriteRepositories.contains(repository)
+        }
+        return currentRepositories
+    }
+
     class RepositoriesViewHolder(val binding: FragmentRepositoryBinding) :
         RecyclerView.ViewHolder(binding.root)
+}
+
+class RepositoriesDiffUtils(
+    private val oldList: List<Repository>,
+    private val newList: List<Repository>
+) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int = oldList.size
+
+    override fun getNewListSize(): Int = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldRepository = oldList[oldItemPosition]
+        val newRepository = newList[newItemPosition]
+        return oldRepository.id == newRepository.id
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldRepository = oldList[oldItemPosition]
+        val newRepository = newList[newItemPosition]
+        return oldRepository == newRepository && oldRepository.favorite == newRepository.favorite
+    }
+
 }

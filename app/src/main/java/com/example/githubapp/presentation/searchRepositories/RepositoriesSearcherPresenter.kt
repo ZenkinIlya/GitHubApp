@@ -20,6 +20,15 @@ class RepositoriesSearcherPresenter @Inject constructor(
     fun init() {
         val currentUser = signInInteractor.getCurrentUser()
         viewState.displayFavoriteRepositories(currentUser.email != Const.DEFAULT_EMAIL)
+
+        repositoryInteractor.getCurrentRepositoriesFromDatabase()
+            .observeOn(schedulersProvider.ui())
+            .subscribe(
+                { repositoryList ->
+                    Timber.i("saved repositories retrieved by listener")
+                    viewState.updateRepositories(repositoryList)
+                },
+                { t -> viewState.showError(t.localizedMessage) })
     }
 
     fun onSearchRepositories(mapSearchData: Map<String, String>) {

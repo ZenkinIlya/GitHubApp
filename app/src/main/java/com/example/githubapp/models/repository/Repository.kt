@@ -38,4 +38,34 @@ data class Repository(
     val dateOfCreation: String,
 
     var favorite: Boolean
-)
+
+
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Repository
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (owner != other.owner) return false
+        if (description != other.description) return false
+        if (forks_count != other.forks_count) return false
+        if (stars_count != other.stars_count) return false
+        if (dateOfCreation != other.dateOfCreation) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + owner.hashCode()
+        result = 31 * result + (description?.hashCode() ?: 0)
+        result = 31 * result + (forks_count ?: 0)
+        result = 31 * result + (stars_count ?: 0)
+        result = 31 * result + dateOfCreation.hashCode()
+        return result
+    }
+}
