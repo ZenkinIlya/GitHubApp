@@ -61,8 +61,8 @@ class RepositoriesRepository(
 
     /** get count entries from CrossRef and load from database all favorite repositories */
     fun getSavedRepositoriesFromDatabase(user: User): Observable<List<Repository>> {
-        return appDatabase.getRepositoriesDao().getCountUserRepositoryCrossRefListener(user.email)
-            .doOnNext { Timber.d("getSavedRepositoriesFromDatabase(): #1 count UserRepositoryCrossRef by ${user.email} = $it") }
+        return appDatabase.getRepositoriesDao().getCountUserRepositoryCrossRef(user.email)
+            .doOnSuccess { Timber.d("getSavedRepositoriesFromDatabase(): #1 count UserRepositoryCrossRef by ${user.email} = $it") }
             .toObservable()
             .switchMap { count ->
                 if (count > 0) {
