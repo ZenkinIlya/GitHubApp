@@ -12,7 +12,6 @@ open class BasePresenter<T : MvpView> : MvpPresenter<T>() {
 
     fun unsubscribeOnDestroy(disposable: Disposable, num: Int) {
         compositeDisposable.add(disposable)
-        Timber.w("Reposi num disposable = $num")
         Timber.w("Reposi count of disposable = ${compositeDisposable.size()}")
     }
 

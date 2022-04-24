@@ -12,11 +12,11 @@ interface SavedRepositoriesView : MvpView {
     fun showLoading(show: Boolean)
 
     @StateStrategyType(OneExecutionStateStrategy::class)
-    fun showError(error: String)
+    fun showError(error: String?)
 
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showRepositories(listRepository: List<Repository>)
 
     @StateStrategyType(OneExecutionStateStrategy::class)
-    fun removeRepositoryFromFavorite(repository: Repository)
+    fun updateRepositories(repositoryList: List<Repository>)
 }

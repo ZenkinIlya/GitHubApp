@@ -2,6 +2,7 @@ package com.example.githubapp.business.repositories
 
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.presentation.common.SchedulersProvider
+import com.example.githubapp.repositories.repositories.CacheRepository
 import com.example.githubapp.repositories.repositories.RepositoriesRepository
 import com.example.githubapp.repositories.user.UserRepository
 import io.reactivex.rxjava3.core.Completable
@@ -11,15 +12,24 @@ import timber.log.Timber
 
 class RepositoryInteractor(
     private val repositoriesRepository: RepositoriesRepository,
+    private val cacheRepository: CacheRepository,
     private val schedulersProvider: SchedulersProvider,
     private val userRepository: UserRepository
 ) {
 
-    /** Get all repositories by searchData and saved repositories from database.
-     * Check if listSavedRep contains repositories from githubApi */
+    /** Get all repositories from service. if repositories not empty, save them in cache.
+     * Get saved repositories from database and mark some repositories from service as favorite */
     fun getRepositories(mapSearchData: Map<String, String>): Single<List<Repository>> {
         return repositoriesRepository.getRepositoriesFromGithubApiService(mapSearchData)
-            .onErrorReturn { repositoriesRepository.getCachedRepositories(mapSearchData) }
+            .map {
+                if (it.isNotEmpty()) {
+                    Timber.i("getRepositories(): #2 cacheRepository clear and put")
+                    cacheRepository.clearCache()
+                    cacheRepository.putRepositories(it)
+                }
+                return@map it
+            }
+            .onErrorReturn { getCachedRepositories(mapSearchData) }
             .flatMap { repositories ->
                 getSavedRepositories(mapSearchData).map { savedRepositories ->
                     markRepositoriesAsFavorite(repositories, savedRepositories)
@@ -32,8 +42,8 @@ class RepositoryInteractor(
         repositories: List<Repository>,
         favoriteRepositories: List<Repository>
     ): List<Repository> {
-        Timber.d("getRepositories(): #5 repositoriesFromApi = ${repositories.size} ${repositories.map { it.id }}")
-        Timber.d("getRepositories(): #6 savedRepositories = ${favoriteRepositories.size} ${favoriteRepositories.map { it.id }}")
+        Timber.d("getRepositories(): #8 repositoriesFromApi = ${repositories.size} ${repositories.map { it.id }}")
+        Timber.d("getRepositories(): #9 savedRepositories = ${favoriteRepositories.size} ${favoriteRepositories.map { it.id }}")
         return repositories.map { repository ->
             repository.favorite = favoriteRepositories.any { it.id == repository.id }
 /*                Timber.d("markRepositoriesAsFavorite(): repository: ${repository.id}, " +
@@ -42,6 +52,21 @@ class RepositoryInteractor(
                         "ref = ${System.identityHashCode(repository)}")*/
             return@map repository
         }
+    }
+
+    /** Get cached repositories*/
+    private fun getCachedRepositories(mapSearchData: Map<String, String>): List<Repository> {
+        val repositories = cacheRepository.getRepositories()
+            .filter { repository ->
+                repository.name.contains(
+                    mapSearchData["q"].toString(),
+                    ignoreCase = true
+                )
+            }
+            .toList()
+
+        Timber.i("getCachedRepositories(): #3 repositories \"$mapSearchData\" from Cache = ${repositories.size} ${repositories.map { rep -> rep.id }}")
+        return repositories
     }
 
     /** Save repository which marked as favorite*/
@@ -55,22 +80,18 @@ class RepositoryInteractor(
     /** Get saved repositories by current user*/
     fun getSavedRepositories(mapSearchData: Map<String, String>): Single<List<Repository>> {
         return repositoriesRepository.getSavedRepositoriesFromDatabase(userRepository.getUser())
-            .doOnSuccess { Timber.d("getSavedRepositories(): #3 saved repositories by ${userRepository.getUser().email} = ${it.size}") }
+            .doOnSuccess { Timber.d("getSavedRepositories(): #6 saved repositories by ${userRepository.getUser().email} = ${it.size}") }
             .map { listSavedRepositories ->
-                if (!mapSearchData["q"].isNullOrBlank()) {
-                    listSavedRepositories
-                        .filter { repository ->
-                            repository.name.contains(
-                                mapSearchData["q"].toString(),
-                                ignoreCase = true
-                            )
-                        }
-                } else {
-                    listSavedRepositories
-                }
+                listSavedRepositories
+                    .filter { repository ->
+                        repository.name.contains(
+                            mapSearchData["q"].toString(),
+                            ignoreCase = true
+                        )
+                    }
             }
-            .doOnSuccess { Timber.d("getSavedRepositories(): #4 filtered saved repositories by ${userRepository.getUser().email} = ${it.size}") }
-            .doOnError { t -> Timber.e("getSavedRepositories: ${t.localizedMessage}") }
+            .doOnSuccess { Timber.d("getSavedRepositories(): #7 filtered \"$mapSearchData\" saved repositories by ${userRepository.getUser().email} = ${it.size}") }
+            .doOnError { t -> Timber.e("getSavedRepositories(): ${t.localizedMessage}") }
             .subscribeOn(schedulersProvider.io())
     }
 

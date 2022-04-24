@@ -13,35 +13,45 @@ class SavedRepositoriesPresenter @Inject constructor(
     private val schedulersProvider: SchedulersProvider
 ) : BasePresenter<SavedRepositoriesView>() {
 
-    fun onGetFavoriteRepositories(mapSearchData: Map<String, String>){
+    fun initRepositoriesDatabaseListener() {
+        val disposable: Disposable =
+            repositoryInteractor.getCurrentRepositoriesFromDatabase()
+                .observeOn(schedulersProvider.ui())
+                .subscribe(
+                    { repositoryList ->
+                        viewState.updateRepositories(repositoryList)
+                        Timber.i("received saved repositories and update saved page")
+                    },
+                    { t -> viewState.showError(t.localizedMessage) })
+        unsubscribeOnDestroy(disposable, 8)
+    }
+
+    fun onGetFavoriteRepositories(mapSearchData: Map<String, String>) {
         val disposable: Disposable =
             repositoryInteractor.getSavedRepositories(mapSearchData)
                 .observeOn(schedulersProvider.ui())
                 .doOnSubscribe { viewState.showLoading(true) }
                 .subscribe(
                     { repositoryList ->
-                        Timber.i("saved repositories retrieved")
+                        Timber.i("received saved repositories")
                         viewState.showRepositories(repositoryList)
                         viewState.showLoading(false)
                     },
-                    { t -> viewState.showError(t.localizedMessage) })
+                    { t ->
+                        viewState.showError(t.localizedMessage)
+                        viewState.showLoading(false)
+                    })
         unsubscribeOnDestroy(disposable, 1)
     }
 
     fun onClickFavorite(repository: Repository) {
-        deleteRepository(repository)
-    }
-
-    private fun deleteRepository(repository: Repository) {
         val disposable: Disposable =
             repositoryInteractor.deleteSavedRepository(repository)
                 .observeOn(schedulersProvider.ui())
                 .subscribe({
-                    viewState.removeRepositoryFromFavorite(repository)
-                    Timber.i("deleted repository completed")
+                    Timber.i("deleted repository")
                 },
                     { t -> viewState.showError(t.localizedMessage) })
         unsubscribeOnDestroy(disposable, 7)
     }
-
 }

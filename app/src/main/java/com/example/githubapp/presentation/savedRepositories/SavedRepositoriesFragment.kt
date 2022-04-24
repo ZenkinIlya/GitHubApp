@@ -68,6 +68,7 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
         binding.recyclerViewSavedRepositories.layoutManager = linearLayoutManager
         binding.recyclerViewSavedRepositories.adapter = adapter
 
+        savedRepositoriesPresenter.initRepositoriesDatabaseListener()
 //        savedRepositoriesPresenter.onGetFavoriteRepositories(emptyMap())
     }
 
@@ -124,7 +125,7 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
         }
     }
 
-    override fun showError(error: String) {
+    override fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_LONG).show()
         Timber.e(error)
     }
@@ -133,7 +134,8 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
         adapter.repositories = listRepository
     }
 
-    override fun removeRepositoryFromFavorite(repository: Repository) {
-        adapter.removeRepository(repository)
+    override fun updateRepositories(repositoryList: List<Repository>) {
+        adapter.updateSavedRepositories(repositoryList)
     }
+
 }

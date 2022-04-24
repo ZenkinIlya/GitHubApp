@@ -13,46 +13,23 @@ import timber.log.Timber
 
 class RepositoriesRepository(
     private val githubApiService: GithubApiService,
-    private val cacheRepository: CacheRepository,
     private val appDatabase: AppDatabase,
     private val userMapper: UserMapper,
     private val repositoryMapper: RepositoryMapper,
     private val userWithRepositoryMapper: UserWithRepositoryMapper
 ) {
 
-    /** Get repositories from githubApi service with save in cache*/
+    /** Get repositories from githubApi service. Service cant handle empty q.
+     * If empty input data then return emptyList, otherwise return repositories from service.*/
     fun getRepositoriesFromGithubApiService(mapSearchData: Map<String, String>): Single<List<Repository>> {
         return Single.just(mapSearchData)
             .filter { it["q"].toString().isNotBlank() }
             .map { searchData -> githubApiService.getRepositories(searchData).map { it.items } }
             .blockingGet(Single.just(emptyList()))
-            .map {
-                if (it.isNotEmpty()) {
-                    Timber.w("getRepositoriesFromGithubApiService(): cacheRepository clear and put")
-                    cacheRepository.clearCache()
-                    cacheRepository.putRepositories(it)
-                }
-                return@map it
-            }
-            .doOnSuccess {
-                Timber.d("getRepositoriesFromGithubApiService(): repositories \"$mapSearchData\" from API = ${it.size} ${it.map { rep -> rep.id }}")
-            }
             .doOnError { t -> Timber.e("getRepositoriesFromGithubApiService(): ${t.localizedMessage}") }
-    }
-
-    /** Get cached repositories*/
-    fun getCachedRepositories(mapSearchData: Map<String, String>): List<Repository> {
-        val repositories = cacheRepository.getRepositories()
-            .filter { repository ->
-                repository.name.contains(
-                    mapSearchData["q"].toString(),
-                    ignoreCase = true
-                )
+            .doOnSuccess {
+                Timber.d("getRepositoriesFromGithubApiService(): #1 repositories \"$mapSearchData\" from API = ${it.size} ${it.map { rep -> rep.id }}")
             }
-            .toList()
-
-        Timber.i("getCachedRepositories(): repositories \"$mapSearchData\" from Cache = ${repositories.size} ${repositories.map { rep -> rep.id }}")
-        return repositories
     }
 
     /** Save repository which marked as favorite*/
@@ -79,11 +56,11 @@ class RepositoriesRepository(
     /** get count entries from CrossRef and load from database all favorite repositories */
     fun getSavedRepositoriesFromDatabase(user: User): Single<List<Repository>> {
         return appDatabase.getRepositoriesDao().getCountUserRepositoryCrossRef(user.email)
-            .doOnSuccess { Timber.d("getSavedRepositoriesFromDatabase(): #1 count UserRepositoryCrossRef by ${user.email} = $it") }
+            .doOnSuccess { Timber.d("getSavedRepositoriesFromDatabase(): #4 count UserRepositoryCrossRef by ${user.email} = $it") }
             .flatMap { count ->
                 if (count > 0) {
                     appDatabase.getRepositoriesDao().getUserWithRepositories(user.email)
-                        .doOnSuccess { Timber.d("getSavedRepositoriesFromDatabase(): #2 saved repositories by ${user.email} = ${it.repositoriesDb.size}") }
+                        .doOnSuccess { Timber.d("getSavedRepositoriesFromDatabase(): #5 saved repositories by ${user.email} = ${it.repositoriesDb.size}") }
                         .map {
                             userWithRepositoryMapper.getListRepositoriesFromUserDbWithRepositoriesDb(
                                 it

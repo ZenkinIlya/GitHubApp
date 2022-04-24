@@ -53,7 +53,8 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
         Timber.i("onCreateView()")
         binding = FragmentRepositoriesSearcherBinding.inflate(inflater, container, false)
 
-        repositoriesSearchPresenter.init()
+        repositoriesSearchPresenter.initDisplayFavoriteRepositories()
+        repositoriesSearchPresenter.initRepositoriesDatabaseListener()
 
         return binding.root
     }

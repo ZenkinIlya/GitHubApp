@@ -17,11 +17,14 @@ class RepositoriesSearcherPresenter @Inject constructor(
 ) :
     BasePresenter<RepositoriesSearcherView>() {
 
-    fun init() {
+    fun initDisplayFavoriteRepositories() {
         val currentUser = signInInteractor.getCurrentUser()
         viewState.displayFavoriteRepositories(currentUser.email != Const.DEFAULT_EMAIL)
+    }
 
-        repositoryInteractor.getCurrentRepositoriesFromDatabase()
+    fun initRepositoriesDatabaseListener() {
+        val disposable: Disposable =
+            repositoryInteractor.getCurrentRepositoriesFromDatabase()
             .observeOn(schedulersProvider.ui())
             .subscribe(
                 { repositoryList ->
@@ -29,6 +32,7 @@ class RepositoriesSearcherPresenter @Inject constructor(
                     viewState.updateRepositories(repositoryList)
                 },
                 { t -> viewState.showError(t.localizedMessage) })
+        unsubscribeOnDestroy(disposable, 8)
     }
 
     fun onSearchRepositories(mapSearchData: Map<String, String>) {
@@ -38,13 +42,14 @@ class RepositoriesSearcherPresenter @Inject constructor(
                 .doOnSubscribe { viewState.showLoading(true) }
                 .subscribe(
                     { repositoryList ->
-                        Timber.i("found repositories retrieved")
                         viewState.showLoading(false)
                         viewState.showRepositories(repositoryList)
+                        Timber.i("found repositories retrieved")
                     },
                     { t ->
+                        viewState.showLoading(false)
                         viewState.showError(t.localizedMessage)
-                        viewState.showLoading(false) })
+                    })
         unsubscribeOnDestroy(disposable, 4)
     }
 
@@ -61,7 +66,13 @@ class RepositoriesSearcherPresenter @Inject constructor(
             repositoryInteractor.saveRepository(repository)
                 .observeOn(schedulersProvider.ui())
                 .subscribe({
-                    Timber.i("save repository with id = ${repository.id}, ref = ${System.identityHashCode(repository)} completed")
+                    Timber.i(
+                        "save repository with id = ${repository.id}, ref = ${
+                            System.identityHashCode(
+                                repository
+                            )
+                        } completed"
+                    )
                 },
                     { t -> viewState.showError(t.localizedMessage) })
         unsubscribeOnDestroy(disposable, 5)

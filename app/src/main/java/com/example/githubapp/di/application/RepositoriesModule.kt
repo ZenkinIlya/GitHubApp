@@ -22,17 +22,17 @@ class RepositoriesModule {
     @Singleton
     fun provideRepositoriesInteractor(
         repositoriesRepository: RepositoriesRepository,
+        cacheRepository: CacheRepository,
         schedulersProvider: SchedulersProvider,
         userRepository: UserRepository
     ): RepositoryInteractor {
-        return RepositoryInteractor(repositoriesRepository, schedulersProvider, userRepository)
+        return RepositoryInteractor(repositoriesRepository, cacheRepository, schedulersProvider, userRepository)
     }
 
     @Provides
     @Singleton
     fun provideRepositoriesRepository(
         githubApiService: GithubApiService,
-        cacheRepository: CacheRepository,
         appDatabase: AppDatabase,
         userMapper: UserMapper,
         repositoryMapper: RepositoryMapper,
@@ -40,7 +40,6 @@ class RepositoriesModule {
     ): RepositoriesRepository {
         return RepositoriesRepository(
             githubApiService,
-            cacheRepository,
             appDatabase,
             userMapper,
             repositoryMapper,
