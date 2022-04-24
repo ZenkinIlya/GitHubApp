@@ -16,4 +16,7 @@ interface SavedRepositoriesView : MvpView {
 
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showRepositories(listRepository: List<Repository>)
+
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun removeRepositoryFromFavorite(repository: Repository)
 }

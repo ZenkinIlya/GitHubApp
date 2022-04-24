@@ -21,7 +21,7 @@ class RepositoriesAdapter(
     var repositories: List<Repository> = emptyList()
         set(newValue) {
             val calculateDiff =
-                DiffUtil.calculateDiff(RepositoriesDiffUtils(field, newValue), false)
+                DiffUtil.calculateDiff(RepositoriesDiffUtils(field, newValue))
             field = newValue
             calculateDiff.dispatchUpdatesTo(this)
         }
@@ -92,13 +92,19 @@ class RepositoriesAdapter(
 
     override fun getItemCount(): Int = repositories.size
 
-    fun updateRepositories(favoriteRepositories: List<Repository>): List<Repository> {
+    fun updateRepositories(favoriteRepositories: List<Repository>) {
         //TODO Optimize update repositories
         val currentRepositories = repositories.map { it.copy() }
         currentRepositories.forEach { repository ->
             repository.favorite = favoriteRepositories.contains(repository)
         }
-        return currentRepositories
+        this.repositories = currentRepositories
+    }
+
+    fun removeRepository(repository: Repository) {
+        val toMutableList = repositories.toMutableList()
+        toMutableList.remove(repository)
+        repositories = toMutableList
     }
 
     class RepositoriesViewHolder(val binding: FragmentRepositoryBinding) :

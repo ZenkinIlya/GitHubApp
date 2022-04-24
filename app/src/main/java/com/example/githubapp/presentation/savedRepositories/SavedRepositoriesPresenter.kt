@@ -37,6 +37,7 @@ class SavedRepositoriesPresenter @Inject constructor(
             repositoryInteractor.deleteSavedRepository(repository)
                 .observeOn(schedulersProvider.ui())
                 .subscribe({
+                    viewState.removeRepositoryFromFavorite(repository)
                     Timber.i("deleted repository completed")
                 },
                     { t -> viewState.showError(t.localizedMessage) })

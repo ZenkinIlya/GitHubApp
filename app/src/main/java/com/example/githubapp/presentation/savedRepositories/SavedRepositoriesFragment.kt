@@ -68,7 +68,7 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
         binding.recyclerViewSavedRepositories.layoutManager = linearLayoutManager
         binding.recyclerViewSavedRepositories.adapter = adapter
 
-        savedRepositoriesPresenter.onGetFavoriteRepositories(emptyMap())
+//        savedRepositoriesPresenter.onGetFavoriteRepositories(emptyMap())
     }
 
     override fun onStart() {
@@ -131,5 +131,9 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
 
     override fun showRepositories(listRepository: List<Repository>) {
         adapter.repositories = listRepository
+    }
+
+    override fun removeRepositoryFromFavorite(repository: Repository) {
+        adapter.removeRepository(repository)
     }
 }

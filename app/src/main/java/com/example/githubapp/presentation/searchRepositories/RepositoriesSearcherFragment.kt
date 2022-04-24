@@ -120,7 +120,6 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
 
     override fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_LONG).show()
-        Timber.e(error)
     }
 
     override fun showRepositories(listRepository: List<Repository>) {
@@ -145,6 +144,6 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
     }
 
     override fun updateRepositories(listRepository: List<Repository>) {
-        adapter.repositories = adapter.updateRepositories(listRepository)
+        adapter.updateRepositories(listRepository)
     }
 }

@@ -3,14 +3,12 @@ package com.example.githubapp.repositories.repositories
 import com.example.githubapp.data.dao.AppDatabase
 import com.example.githubapp.data.network.GithubApiService
 import com.example.githubapp.models.db.UserRepositoryCrossRef
-import com.example.githubapp.models.db.user.UserDbWithRepositoriesDb
 import com.example.githubapp.models.mappers.RepositoryMapper
 import com.example.githubapp.models.mappers.UserMapper
 import com.example.githubapp.models.mappers.UserWithRepositoryMapper
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.models.user.User
 import io.reactivex.rxjava3.core.*
-import io.reactivex.rxjava3.internal.operators.flowable.FlowableInternalHelper
 import timber.log.Timber
 
 class RepositoriesRepository(
@@ -24,19 +22,37 @@ class RepositoriesRepository(
 
     /** Get repositories from githubApi service with save in cache*/
     fun getRepositoriesFromGithubApiService(mapSearchData: Map<String, String>): Single<List<Repository>> {
-        Timber.w("getRepositoriesFromGithubApiService()")
         return Single.just(mapSearchData)
-            .map { it["q"].toString().isNotBlank() }
-            .flatMap { flag ->
-                if (flag) {
-                    githubApiService.getRepositories(mapSearchData)
-                        .map { it.items }
-                } else {
-                    Single.just(emptyList())
+            .filter { it["q"].toString().isNotBlank() }
+            .map { searchData -> githubApiService.getRepositories(searchData).map { it.items } }
+            .blockingGet(Single.just(emptyList()))
+            .map {
+                if (it.isNotEmpty()) {
+                    Timber.w("getRepositoriesFromGithubApiService(): cacheRepository clear and put")
+                    cacheRepository.clearCache()
+                    cacheRepository.putRepositories(it)
                 }
+                return@map it
             }
-            .doOnSuccess { Timber.d("getRepositoriesFromGithubApiService(): repositories \"$mapSearchData\" from API = ${it.size} ${it.map { rep -> rep.id }}") }
-        //TODO save in cacheRepository
+            .doOnSuccess {
+                Timber.d("getRepositoriesFromGithubApiService(): repositories \"$mapSearchData\" from API = ${it.size} ${it.map { rep -> rep.id }}")
+            }
+            .doOnError { t -> Timber.e("getRepositoriesFromGithubApiService(): ${t.localizedMessage}") }
+    }
+
+    /** Get cached repositories*/
+    fun getCachedRepositories(mapSearchData: Map<String, String>): List<Repository> {
+        val repositories = cacheRepository.getRepositories()
+            .filter { repository ->
+                repository.name.contains(
+                    mapSearchData["q"].toString(),
+                    ignoreCase = true
+                )
+            }
+            .toList()
+
+        Timber.i("getCachedRepositories(): repositories \"$mapSearchData\" from Cache = ${repositories.size} ${repositories.map { rep -> rep.id }}")
+        return repositories
     }
 
     /** Save repository which marked as favorite*/

@@ -1,5 +1,6 @@
 package com.example.githubapp.di.application
 
+import android.content.SharedPreferences
 import com.example.githubapp.business.repositories.RepositoryInteractor
 import com.example.githubapp.data.dao.AppDatabase
 import com.example.githubapp.data.network.GithubApiService
@@ -49,7 +50,7 @@ class RepositoriesModule {
 
     @Provides
     @Singleton
-    fun provideRepositoriesCache(): CacheRepository {
-        return CacheRepository()
+    fun provideRepositoriesCache(sharedPreferences: SharedPreferences): CacheRepository {
+        return CacheRepository(sharedPreferences)
     }
 }

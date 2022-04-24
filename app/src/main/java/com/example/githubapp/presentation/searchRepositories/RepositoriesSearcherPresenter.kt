@@ -42,7 +42,9 @@ class RepositoriesSearcherPresenter @Inject constructor(
                         viewState.showLoading(false)
                         viewState.showRepositories(repositoryList)
                     },
-                    { t -> viewState.showError(t.localizedMessage) })
+                    { t ->
+                        viewState.showError(t.localizedMessage)
+                        viewState.showLoading(false) })
         unsubscribeOnDestroy(disposable, 4)
     }
 

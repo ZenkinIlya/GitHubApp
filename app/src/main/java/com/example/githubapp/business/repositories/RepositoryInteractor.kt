@@ -7,7 +7,6 @@ import com.example.githubapp.repositories.user.UserRepository
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.functions.BiFunction
 import timber.log.Timber
 
 class RepositoryInteractor(
@@ -20,22 +19,12 @@ class RepositoryInteractor(
      * Check if listSavedRep contains repositories from githubApi */
     fun getRepositories(mapSearchData: Map<String, String>): Single<List<Repository>> {
         return repositoriesRepository.getRepositoriesFromGithubApiService(mapSearchData)
-            .flatMap { repositoriesFromApi ->
+            .onErrorReturn { repositoriesRepository.getCachedRepositories(mapSearchData) }
+            .flatMap { repositories ->
                 getSavedRepositories(mapSearchData).map { savedRepositories ->
-                    markRepositoriesAsFavorite(repositoriesFromApi, savedRepositories)
+                    markRepositoriesAsFavorite(repositories, savedRepositories)
                 }
             }.subscribeOn(schedulersProvider.io())
-
-
-/*        return Observable.combineLatest(
-            repositoriesRepository.getRepositoriesFromGithubApiService(mapSearchData)
-                .toObservable(),
-            getSavedRepositories(mapSearchData)
-        ) { repositoriesFromApi, savedRepositories ->
-            Timber.d("getRepositories(): #5 repositoriesFromApi = ${repositoriesFromApi.size} ${repositoriesFromApi.map { it.id }}")
-            Timber.d("getRepositories(): #6 savedRepositories = ${savedRepositories.size} ${savedRepositories.map { it.id }}")
-            markRepositoriesAsFavorite(repositoriesFromApi, savedRepositories)
-        }.subscribeOn(schedulersProvider.io())*/
     }
 
     /** Mark repositories as favorite which contains in second param*/

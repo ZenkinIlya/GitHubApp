@@ -146,7 +146,7 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
             .doOnNext { searchViewModel.setQuery(it) }
             .subscribe(
                 { text ->
-                    Timber.d("subscriber: $text")
+                    Timber.d("search text: $text")
                 },
                 { Timber.e("onError: $it") })
         compositeDisposable.add(disposable)
