@@ -56,15 +56,7 @@ class RepositoryInteractor(
 
     /** Get cached repositories*/
     private fun getCachedRepositories(mapSearchData: Map<String, String>): List<Repository> {
-        val repositories = cacheRepository.getRepositories()
-            .filter { repository ->
-                repository.name.contains(
-                    mapSearchData["q"].toString(),
-                    ignoreCase = true
-                )
-            }
-            .toList()
-
+        val repositories = filterByMap(mapSearchData, cacheRepository.getRepositories())
         Timber.i("getCachedRepositories(): #3 repositories \"$mapSearchData\" from Cache = ${repositories.size} ${repositories.map { rep -> rep.id }}")
         return repositories
     }
@@ -81,18 +73,30 @@ class RepositoryInteractor(
     fun getSavedRepositories(mapSearchData: Map<String, String>): Single<List<Repository>> {
         return repositoriesRepository.getSavedRepositoriesFromDatabase(userRepository.getUser())
             .doOnSuccess { Timber.d("getSavedRepositories(): #6 saved repositories by ${userRepository.getUser().email} = ${it.size}") }
-            .map { listSavedRepositories ->
-                listSavedRepositories
-                    .filter { repository ->
-                        repository.name.contains(
-                            mapSearchData["q"].toString(),
-                            ignoreCase = true
-                        )
-                    }
+            .map { listSavedRepositories -> filterByMap(mapSearchData, listSavedRepositories)
             }
             .doOnSuccess { Timber.d("getSavedRepositories(): #7 filtered \"$mapSearchData\" saved repositories by ${userRepository.getUser().email} = ${it.size}") }
             .doOnError { t -> Timber.e("getSavedRepositories(): ${t.localizedMessage}") }
             .subscribeOn(schedulersProvider.io())
+    }
+
+    /** Filter by map data
+     * if value of key=q is empty, return input list without changes*/
+    private fun filterByMap(
+        mapSearchData: Map<String, String>,
+        listRepositories: List<Repository>
+    ): List<Repository> {
+        return if (mapSearchData["q"].isNullOrBlank()) {
+            listRepositories
+                .filter { repository ->
+                    repository.name.contains(
+                        mapSearchData["q"].toString(),
+                        ignoreCase = true
+                    )
+                }
+        } else {
+            listRepositories
+        }
     }
 
     /** Delete saved repositories*/
