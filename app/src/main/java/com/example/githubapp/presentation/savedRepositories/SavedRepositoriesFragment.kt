@@ -28,6 +28,7 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
 
     private lateinit var binding: FragmentSavedRepositoriesBinding
     private lateinit var adapter: RepositoriesAdapter
+    private lateinit var searchViewModel: SearchViewModel
 
     @Inject
     lateinit var presenterProvider: Provider<SavedRepositoriesPresenter>
@@ -108,7 +109,7 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
     }
 
     private fun initSearchObserve() {
-        val searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
+        searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
         searchViewModel.getQuery().observe(viewLifecycleOwner) {
             savedRepositoriesPresenter.onGetFavoriteRepositories(mapOf("q" to it))
         }
@@ -135,7 +136,7 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
     }
 
     override fun updateRepositories(repositoryList: List<Repository>) {
-        adapter.updateSavedRepositories(repositoryList)
+        adapter.updateSavedRepositories(repositoryList, searchViewModel.getQuery().value)
     }
 
 }

@@ -10,7 +10,6 @@ import com.example.githubapp.R
 import com.example.githubapp.databinding.FragmentRepositoryBinding
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.presentation.repository.RepositoryClickHandler
-import kotlin.streams.toList
 
 class RepositoriesAdapter(
     private val repositoryClickHandler: RepositoryClickHandler,
@@ -102,14 +101,17 @@ class RepositoriesAdapter(
         this.repositories = currentRepositories
     }
 
-    fun updateSavedRepositories(favoriteRepositories: List<Repository>) {
-        this.repositories = repositories.stream()
-            .map { it.copy() }
-            .map { repository ->
-                repository.favorite = favoriteRepositories.contains(repository)
-                return@map repository
-            }.filter { repository -> repository.favorite }
-            .toList()
+    fun updateSavedRepositories(favoriteRepositories: List<Repository>, value: String?) {
+        var filterFavoriteRepositories = emptyList<Repository>()
+        if (!value.isNullOrBlank()) {
+            filterFavoriteRepositories = favoriteRepositories.filter { repository ->
+                repository.name.contains(
+                    value.toString(),
+                    ignoreCase = true
+                )
+            }.toList()
+        }
+        repositories = filterFavoriteRepositories
     }
 
     class RepositoriesViewHolder(val binding: FragmentRepositoryBinding) :
