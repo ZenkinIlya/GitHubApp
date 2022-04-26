@@ -86,7 +86,7 @@ class RepositoryInteractor(
         mapSearchData: Map<String, String>,
         listRepositories: List<Repository>
     ): List<Repository> {
-        return if (mapSearchData["q"].isNullOrBlank()) {
+        return if (!mapSearchData["q"].isNullOrBlank()) {
             listRepositories
                 .filter { repository ->
                     repository.name.contains(
