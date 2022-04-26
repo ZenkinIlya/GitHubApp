@@ -69,7 +69,7 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
         binding.recyclerViewSavedRepositories.adapter = adapter
 
         savedRepositoriesPresenter.initRepositoriesDatabaseListener()
-//        savedRepositoriesPresenter.onGetFavoriteRepositories(emptyMap())
+        savedRepositoriesPresenter.onGetFavoriteRepositories(emptyMap())
     }
 
     override fun onStart() {
