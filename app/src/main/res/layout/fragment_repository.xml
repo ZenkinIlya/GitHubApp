@@ -1,132 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="10dp"
-    tools:context=".presentation.repository.RepositoryFragment"
-    android:background="?android:attr/selectableItemBackground">
+    android:layout_margin="10dp"
+    style="@style/Card"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    tools:context=".presentation.repository.RepositoryFragment">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_margin="10dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/name_repository" />
-
-        <TextView
-            android:id="@+id/name_repository"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="20dp"
-            android:paddingEnd="0dp"
-            tools:text="@tools:sample/lorem" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/author" />
+        <ImageView
+            android:id="@+id/avatar_image_view"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:contentDescription="@string/avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_account" />
 
         <TextView
             android:id="@+id/login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="20dp"
-            android:paddingEnd="0dp"
+            android:layout_marginStart="6dp"
+            app:layout_constraintBottom_toBottomOf="@+id/avatar_image_view"
+            app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
+            app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
             tools:text="@tools:sample/first_names" />
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/avatar_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/avatar"
-        tools:src="@drawable/ic_account" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/name_repository"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/description" />
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/avatar_image_view"
+            tools:text="@tools:sample/lorem" />
 
         <TextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="20dp"
-            android:paddingEnd="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name_repository"
             tools:text="@tools:sample/lorem" />
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
+        <ImageView
+            android:id="@+id/star_image_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/forks" />
-
-        <TextView
-            android:id="@+id/forks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="20dp"
-            android:paddingEnd="0dp"
-            tools:text="@tools:sample/us_zipcodes" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/stars" />
+            android:contentDescription="@string/stars"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/description"
+            android:src="@drawable/ic_star"/>
 
         <TextView
             android:id="@+id/stars"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="20dp"
-            android:paddingEnd="0dp"
-            tools:text="@tools:sample/us_zipcodes" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/date_of_creation" />
+            android:layout_marginStart="6dp"
+            app:layout_constraintBottom_toBottomOf="@id/star_image_view"
+            app:layout_constraintStart_toEndOf="@+id/star_image_view"
+            app:layout_constraintTop_toTopOf="@id/star_image_view"
+            tools:text="@tools:sample/us_zipcodes" />
+
+        <ImageView
+            android:id="@+id/fork_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:contentDescription="@string/forks"
+            app:layout_constraintBottom_toBottomOf="@id/stars"
+            app:layout_constraintStart_toEndOf="@id/stars"
+            app:layout_constraintTop_toTopOf="@id/stars"
+            android:src="@drawable/ic_git_fork"/>
+
+        <TextView
+            android:id="@+id/forks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            app:layout_constraintBottom_toBottomOf="@id/fork_image_view"
+            app:layout_constraintStart_toEndOf="@+id/fork_image_view"
+            app:layout_constraintTop_toTopOf="@id/fork_image_view"
+            tools:text="@tools:sample/us_zipcodes" />
 
         <TextView
             android:id="@+id/date_of_creation"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingStart="20dp"
-            android:paddingEnd="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/star_image_view"
             tools:text="@tools:sample/date/ddmmyy" />
 
         <ImageView
@@ -134,12 +104,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            tools:src="@drawable/ic_favorite_border"
-            android:contentDescription="@string/favorite" />
-    </LinearLayout>
+            android:contentDescription="@string/favorite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:src="@drawable/ic_favorite_border" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+</androidx.cardview.widget.CardView>
