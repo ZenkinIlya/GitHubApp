@@ -1,6 +1,8 @@
 package com.example.githubapp.models.repository
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /*    {
       "id": 315728835,
@@ -21,6 +23,7 @@ import com.google.gson.annotations.SerializedName
       "forks": 0,
     }*/
 
+@Parcelize
 data class Repository(
     @SerializedName("id")
     val id: Long,
@@ -39,8 +42,7 @@ data class Repository(
 
     var favorite: Boolean
 
-
-) {
+): Parcelable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

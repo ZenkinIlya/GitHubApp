@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_listRepositoryFragment_to_repositoryFragment"
             app:destination="@id/repositoryFragment" />
+        <argument
+            android:name="repository"
+            app:argType="com.example.githubapp.models.repository.Repository"/>
     </fragment>
     <fragment
         android:id="@+id/repositoryFragment"
