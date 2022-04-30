@@ -10,6 +10,7 @@ import com.example.githubapp.R
 import com.example.githubapp.databinding.FragmentRepositoryBinding
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.presentation.repository.RepositoryClickHandler
+import com.example.githubapp.presentation.repository.RepositoryViewHandler
 
 class RepositoriesAdapter(
     private val repositoryClickHandler: RepositoryClickHandler,
@@ -54,39 +55,9 @@ class RepositoriesAdapter(
             holder.itemView.tag = repository
             favoriteImageView.tag = repository
 
-            nameRepository.text = repository.name
-            login.text = repository.owner.login
-
-            if (repository.owner.avatarUrl?.isNotBlank() == true) {
-                Glide.with(avatarImageView.context)
-                    .load(repository.owner.avatarUrl)
-                    .circleCrop()
-                    .placeholder(R.drawable.ic_account)
-                    .error(R.drawable.ic_account)
-                    .into(avatarImageView)
-            } else {
-                Glide.with(avatarImageView.context).clear(avatarImageView)
-                avatarImageView.setImageResource(R.drawable.ic_account)
-            }
-
-            description.text = repository.description
-            forks.text = repository.forks_count.toString()
-            stars.text = repository.stars_count.toString()
-            dateOfCreation.text = repository.dateOfCreation
-
-            if (authorized) {
-                if (repository.favorite) {
-                    Glide.with(favoriteImageView.context)
-                        .load(R.drawable.ic_favorite)
-                        .placeholder(R.drawable.ic_favorite_border)
-                        .error(R.drawable.ic_favorite_border)
-                        .into(favoriteImageView)
-                } else {
-                    Glide.with(favoriteImageView.context).clear(favoriteImageView)
-                    favoriteImageView.setImageResource(R.drawable.ic_favorite_border)
-                }
-            }
-
+            RepositoryViewHandler.DefaultRepository(this, repository)
+                .bindView()
+                .bindFavoriteImageView(authorized)
         }
     }
 
