@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubapp.R
 import com.example.githubapp.componentManager
@@ -72,6 +73,12 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
         val linearLayoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewSavedRepositories.layoutManager = linearLayoutManager
         binding.recyclerViewSavedRepositories.adapter = adapter
+
+        //Remove flick when we push favorite
+        val itemAnimator = binding.recyclerViewSavedRepositories.itemAnimator
+        if (itemAnimator is DefaultItemAnimator){
+            itemAnimator.supportsChangeAnimations = false
+        }
 
         savedRepositoriesPresenter.initRepositoriesDatabaseListener()
         savedRepositoriesPresenter.onGetFavoriteRepositories(emptyMap())
