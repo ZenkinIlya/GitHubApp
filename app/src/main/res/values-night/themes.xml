@@ -13,4 +13,13 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <!--Карточка с загругленными краями-->
+    <style name="Card" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="android:translationZ">4dp</item>
+        <item name="cardBackgroundColor">@color/purple_200</item>
+    </style>
+
 </resources>

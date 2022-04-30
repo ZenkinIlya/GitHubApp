@@ -2,12 +2,12 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    style="@style/Card"
-    android:foreground="?android:attr/selectableItemBackground"
     android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     tools:context=".presentation.repository.RepositoryFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -56,9 +56,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/stars"
+            android:src="@drawable/ic_star"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/description"
-            android:src="@drawable/ic_star"/>
+            app:layout_constraintTop_toBottomOf="@+id/description" />
 
         <TextView
             android:id="@+id/stars"
@@ -76,10 +76,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:contentDescription="@string/forks"
+            android:src="@drawable/ic_git_fork"
             app:layout_constraintBottom_toBottomOf="@id/stars"
             app:layout_constraintStart_toEndOf="@id/stars"
-            app:layout_constraintTop_toTopOf="@id/stars"
-            android:src="@drawable/ic_git_fork"/>
+            app:layout_constraintTop_toTopOf="@id/stars" />
 
         <TextView
             android:id="@+id/forks"
