@@ -73,16 +73,18 @@ class RepositoriesAdapter(
     }
 
     fun updateSavedRepositories(favoriteRepositories: List<Repository>, value: String?) {
-        var filterFavoriteRepositories = emptyList<Repository>()
-        if (!value.isNullOrBlank()) {
+        val filterFavoriteRepositories: List<Repository>
+        if (value.isNullOrBlank()) {
+            repositories = favoriteRepositories
+        }else{
             filterFavoriteRepositories = favoriteRepositories.filter { repository ->
                 repository.name.contains(
                     value.toString(),
                     ignoreCase = true
                 )
             }.toList()
+            repositories = filterFavoriteRepositories
         }
-        repositories = filterFavoriteRepositories
     }
 
     class RepositoriesViewHolder(val binding: FragmentRepositoryBinding) :
