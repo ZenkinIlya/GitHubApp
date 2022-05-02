@@ -1,8 +1,7 @@
 # Github App
 <p align="center">
-    <img src="https://raw.githubusercontent.com/ZenkinIlya/GitHubApp/main/forReadme/signIn.jpg" width="250">
-    <img src="https://raw.githubusercontent.com/ZenkinIlya/GitHubApp/main/forReadme/search.jpg" width="250">
-    <img src="https://raw.githubusercontent.com/ZenkinIlya/GitHubApp/main/forReadme/saved.jpg" width="250">
+    <img src="https://raw.githubusercontent.com/ZenkinIlya/GitHubApp/main/forReadme/search.png" width="250">
+    <img src="https://raw.githubusercontent.com/ZenkinIlya/GitHubApp/main/forReadme/saved.png" width="250">
 </p>
 
 ## About
