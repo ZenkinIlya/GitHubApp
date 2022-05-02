@@ -9,6 +9,7 @@ import com.example.githubapp.models.mappers.UserWithRepositoryMapper
 import com.example.githubapp.models.repository.Repository
 import com.example.githubapp.models.user.User
 import io.reactivex.rxjava3.core.*
+import io.reactivex.rxjava3.core.Observable.fromIterable
 import timber.log.Timber
 
 class RepositoriesRepository(
@@ -26,6 +27,7 @@ class RepositoriesRepository(
             .filter { it["q"].toString().isNotBlank() }
             .map { searchData -> githubApiService.getRepositories(searchData).map { it.items } }
             .blockingGet(Single.just(emptyList()))
+            .map { it.map { repository -> repositoryMapper.fromApiRepository(repository) }}
             .doOnError { t -> Timber.e("getRepositoriesFromGithubApiService(): ${t.localizedMessage}") }
             .doOnSuccess {
                 Timber.d("getRepositoriesFromGithubApiService(): #1 repositories \"$mapSearchData\" from API = ${it.size} ${it.map { rep -> rep.id }}")
