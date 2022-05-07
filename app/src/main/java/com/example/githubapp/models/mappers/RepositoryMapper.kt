@@ -36,15 +36,32 @@ class RepositoryMapper {
         description = repositoryApi.description,
         forks_count = repositoryApi.forks_count,
         stars_count = repositoryApi.stars_count,
-        dateOfCreation = repositoryApi.dateOfCreation.let { dateOfCreation ->
-            if (dateOfCreation.isNotEmpty()) {
-                val date = LocalDateTime.parse(dateOfCreation, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"))
-                val formatter = DateTimeFormatter.ofPattern("HH:mm  dd-MM-yyyy")
-                return@let date.format(formatter)
-            } else {
-                "null"
-            }
-        },
+        dateOfCreation = ConvertDataTime.DataTimeConverter(repositoryApi.dateOfCreation)
+            .convert("yyyy-MM-dd'T'HH:mm:ss'Z'", "HH:mm  dd-MM-yyyy"),
         favorite = false
     )
 }
+
+interface ConvertDataTime {
+    fun convert(inputFormat: String, targetFormat: String): String
+
+    abstract class Abstract(private val dateTime: String) : ConvertDataTime {
+        override fun convert(inputFormat: String, targetFormat: String): String {
+            return dateTime.let { dateOfCreation ->
+                if (dateOfCreation.isNotEmpty()) {
+                    val date = LocalDateTime.parse(
+                        dateOfCreation,
+                        DateTimeFormatter.ofPattern(inputFormat)
+                    )
+                    val formatter = DateTimeFormatter.ofPattern(targetFormat)
+                    date.format(formatter)
+                } else {
+                    "null"
+                }
+            }
+        }
+    }
+
+    class DataTimeConverter(dateTime: String) : Abstract(dateTime)
+}
+
