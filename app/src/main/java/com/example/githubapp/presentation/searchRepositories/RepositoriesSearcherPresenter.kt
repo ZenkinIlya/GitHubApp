@@ -4,6 +4,7 @@ import com.example.githubapp.business.google.SignInInteractor
 import com.example.githubapp.business.repositories.RepositoryInteractor
 import com.example.githubapp.data.Const
 import com.example.githubapp.models.repository.Repository
+import com.example.githubapp.models.searchParams.SearchRepositoriesParams
 import com.example.githubapp.presentation.common.BasePresenter
 import com.example.githubapp.presentation.common.SchedulersProvider
 import io.reactivex.rxjava3.disposables.Disposable
@@ -35,9 +36,9 @@ class RepositoriesSearcherPresenter @Inject constructor(
         unsubscribeOnDestroy(disposable, 8)
     }
 
-    fun onSearchRepositories(mapSearchData: Map<String, String>) {
+    fun onSearchRepositories(searchRepositoriesParams: SearchRepositoriesParams) {
         val disposable: Disposable =
-            repositoryInteractor.getRepositories(mapSearchData)
+            repositoryInteractor.getRepositories(searchRepositoriesParams)
                 .observeOn(schedulersProvider.ui())
                 .doOnSubscribe { viewState.showLoading(true) }
                 .subscribe(

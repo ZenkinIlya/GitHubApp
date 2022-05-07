@@ -7,9 +7,9 @@ import com.example.githubapp.models.mappers.RepositoryMapper
 import com.example.githubapp.models.mappers.UserMapper
 import com.example.githubapp.models.mappers.UserWithRepositoryMapper
 import com.example.githubapp.models.repository.Repository
+import com.example.githubapp.models.searchParams.SearchRepositoriesParams
 import com.example.githubapp.models.user.User
 import io.reactivex.rxjava3.core.*
-import io.reactivex.rxjava3.core.Observable.fromIterable
 import timber.log.Timber
 
 class RepositoriesRepository(
@@ -22,15 +22,28 @@ class RepositoriesRepository(
 
     /** Get repositories from githubApi service. Service cant handle empty q.
      * If empty input data then return emptyList, otherwise return repositories from service.*/
-    fun getRepositoriesFromGithubApiService(mapSearchData: Map<String, String>): Single<List<Repository>> {
-        return Single.just(mapSearchData)
-            .filter { it["q"].toString().isNotBlank() }
-            .map { searchData -> githubApiService.getRepositories(searchData).map { it.items } }
-            .blockingGet(Single.just(emptyList()))
-            .map { it.map { repository -> repositoryMapper.fromApiRepository(repository) }}
+    fun getRepositoriesFromGithubApiService(searchRepositoriesParams: SearchRepositoriesParams): Single<List<Repository>> {
+        return Single.just(searchRepositoriesParams)
+            .map { searchParams ->
+                githubApiService.getRepositories(
+                    searchParams.q,
+                    searchParams.sort,
+                    searchParams.order,
+                    searchParams.per_page,
+                    searchParams.page
+                ).map { repositoryResponse -> repositoryResponse.items }
+            }
+            .blockingGet()
+            .map { listRepositoriesFromApi ->
+                listRepositoriesFromApi.map { repository ->
+                    repositoryMapper.fromApiRepository(
+                        repository
+                    )
+                }
+            }
             .doOnError { t -> Timber.e("getRepositoriesFromGithubApiService(): ${t.localizedMessage}") }
             .doOnSuccess {
-                Timber.d("getRepositoriesFromGithubApiService(): #1 repositories \"$mapSearchData\" from API = ${it.size} ${it.map { rep -> rep.id }}")
+                Timber.d("getRepositoriesFromGithubApiService(): #1 repositories \"${searchRepositoriesParams.q}\" from API = ${it.size} ${it.map { rep -> rep.id }}")
             }
     }
 

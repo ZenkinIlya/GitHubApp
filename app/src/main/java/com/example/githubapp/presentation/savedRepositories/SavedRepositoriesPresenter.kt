@@ -2,6 +2,7 @@ package com.example.githubapp.presentation.savedRepositories
 
 import com.example.githubapp.business.repositories.RepositoryInteractor
 import com.example.githubapp.models.repository.Repository
+import com.example.githubapp.models.searchParams.SearchRepositoriesParams
 import com.example.githubapp.presentation.common.BasePresenter
 import com.example.githubapp.presentation.common.SchedulersProvider
 import io.reactivex.rxjava3.disposables.Disposable
@@ -26,9 +27,9 @@ class SavedRepositoriesPresenter @Inject constructor(
         unsubscribeOnDestroy(disposable, 8)
     }
 
-    fun onGetFavoriteRepositories(mapSearchData: Map<String, String>) {
+    fun onGetFavoriteRepositories(searchRepositoriesParams: SearchRepositoriesParams) {
         val disposable: Disposable =
-            repositoryInteractor.getSavedRepositories(mapSearchData)
+            repositoryInteractor.getSavedRepositories(searchRepositoriesParams.q)
                 .observeOn(schedulersProvider.ui())
                 .doOnSubscribe { viewState.showLoading(true) }
                 .subscribe(

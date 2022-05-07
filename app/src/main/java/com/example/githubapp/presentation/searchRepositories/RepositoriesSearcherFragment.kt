@@ -15,6 +15,7 @@ import com.example.githubapp.R
 import com.example.githubapp.componentManager
 import com.example.githubapp.databinding.FragmentRepositoriesSearcherBinding
 import com.example.githubapp.models.repository.Repository
+import com.example.githubapp.models.searchParams.SearchRepositoriesParams
 import com.example.githubapp.models.viewModels.SearchViewModel
 import com.example.githubapp.presentation.adapters.RepositoriesAdapter
 import com.example.githubapp.presentation.repository.RepositoryClickHandler
@@ -105,8 +106,12 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
 
     private fun initSearchObserve() {
         val searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
-        searchViewModel.getQuery().observe(viewLifecycleOwner) {
-            repositoriesSearchPresenter.onSearchRepositories(mapOf("q" to it))
+        searchViewModel.getQuery().observe(viewLifecycleOwner) { q ->
+            if (q.isNotEmpty() && q.isNotBlank()){
+                repositoriesSearchPresenter.onSearchRepositories(SearchRepositoriesParams(q))
+            }else{
+                adapter.repositories = emptyList()
+            }
         }
     }
 
@@ -150,7 +155,7 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
 
         //Remove flick when we push favorite
         val itemAnimator = binding.recyclerViewRepositoriesSearcher.itemAnimator
-        if (itemAnimator is DefaultItemAnimator){
+        if (itemAnimator is DefaultItemAnimator) {
             itemAnimator.supportsChangeAnimations = false
         }
     }

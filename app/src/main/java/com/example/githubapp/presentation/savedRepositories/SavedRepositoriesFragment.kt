@@ -16,6 +16,7 @@ import com.example.githubapp.componentManager
 import com.example.githubapp.databinding.FragmentSavedRepositoriesBinding
 import com.example.githubapp.models.viewModels.SearchViewModel
 import com.example.githubapp.models.repository.Repository
+import com.example.githubapp.models.searchParams.SearchRepositoriesParams
 import com.example.githubapp.presentation.adapters.RepositoriesAdapter
 import com.example.githubapp.presentation.repository.RepositoryClickHandler
 import com.google.android.material.progressindicator.BaseProgressIndicator
@@ -76,12 +77,12 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
 
         //Remove flick when we push favorite
         val itemAnimator = binding.recyclerViewSavedRepositories.itemAnimator
-        if (itemAnimator is DefaultItemAnimator){
+        if (itemAnimator is DefaultItemAnimator) {
             itemAnimator.supportsChangeAnimations = false
         }
 
         savedRepositoriesPresenter.initRepositoriesDatabaseListener()
-        savedRepositoriesPresenter.onGetFavoriteRepositories(emptyMap())
+        savedRepositoriesPresenter.onGetFavoriteRepositories(SearchRepositoriesParams(q = ""))
     }
 
     override fun onStart() {
@@ -121,8 +122,8 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
 
     private fun initSearchObserve() {
         searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
-        searchViewModel.getQuery().observe(viewLifecycleOwner) {
-            savedRepositoriesPresenter.onGetFavoriteRepositories(mapOf("q" to it))
+        searchViewModel.getQuery().observe(viewLifecycleOwner) { q ->
+            savedRepositoriesPresenter.onGetFavoriteRepositories(SearchRepositoriesParams(q))
         }
     }
 

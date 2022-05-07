@@ -1,6 +1,7 @@
 package com.example.githubapp.business.repositories
 
 import com.example.githubapp.models.repository.Repository
+import com.example.githubapp.models.searchParams.SearchRepositoriesParams
 import com.example.githubapp.presentation.common.SchedulersProvider
 import com.example.githubapp.repositories.repositories.CacheRepository
 import com.example.githubapp.repositories.repositories.RepositoriesRepository
@@ -19,19 +20,19 @@ class RepositoryInteractor(
 
     /** Get all repositories from service. if repositories not empty, save them in cache.
      * Get saved repositories from database and mark some repositories from service as favorite */
-    fun getRepositories(mapSearchData: Map<String, String>): Single<List<Repository>> {
-        return repositoriesRepository.getRepositoriesFromGithubApiService(mapSearchData)
-            .map {
-                if (it.isNotEmpty()) {
+    fun getRepositories(searchRepositoriesParams: SearchRepositoriesParams): Single<List<Repository>> {
+        return repositoriesRepository.getRepositoriesFromGithubApiService(searchRepositoriesParams)
+            .map {  listRepositoryFromApi ->
+                if (listRepositoryFromApi.isNotEmpty()) {
                     Timber.i("getRepositories(): #2 cacheRepository clear and put")
                     cacheRepository.clearCache()
-                    cacheRepository.putRepositories(it)
+                    cacheRepository.putRepositories(listRepositoryFromApi)
                 }
-                return@map it
+                return@map listRepositoryFromApi
             }
-            .onErrorReturn { getCachedRepositories(mapSearchData) }
+            .onErrorReturn { getCachedRepositories(searchRepositoriesParams.q) }
             .flatMap { repositories ->
-                getSavedRepositories(mapSearchData).map { savedRepositories ->
+                getSavedRepositories(searchRepositoriesParams.q).map { savedRepositories ->
                     markRepositoriesAsFavorite(repositories, savedRepositories)
                 }
             }.subscribeOn(schedulersProvider.io())
@@ -46,18 +47,14 @@ class RepositoryInteractor(
         Timber.d("getRepositories(): #9 savedRepositories = ${favoriteRepositories.size} ${favoriteRepositories.map { it.id }}")
         return repositories.map { repository ->
             repository.favorite = favoriteRepositories.any { it.id == repository.id }
-/*                Timber.d("markRepositoriesAsFavorite(): repository: ${repository.id}, " +
-                        "name = ${repository.name}, " +
-                        "favorite = ${repository.favorite}, " +
-                        "ref = ${System.identityHashCode(repository)}")*/
             return@map repository
         }
     }
 
     /** Get cached repositories*/
-    private fun getCachedRepositories(mapSearchData: Map<String, String>): List<Repository> {
-        val repositories = filterByMap(mapSearchData, cacheRepository.getRepositories())
-        Timber.i("getCachedRepositories(): #3 repositories \"$mapSearchData\" from Cache = ${repositories.size} ${repositories.map { rep -> rep.id }}")
+    private fun getCachedRepositories(q: String): List<Repository> {
+        val repositories = filterByMap(q, cacheRepository.getRepositories())
+        Timber.i("getCachedRepositories(): #3 repositories \"$q\" from Cache = ${repositories.size} ${repositories.map { rep -> rep.id }}")
         return repositories
     }
 
@@ -70,27 +67,27 @@ class RepositoryInteractor(
     }
 
     /** Get saved repositories by current user*/
-    fun getSavedRepositories(mapSearchData: Map<String, String>): Single<List<Repository>> {
+    fun getSavedRepositories(q: String): Single<List<Repository>> {
         return repositoriesRepository.getSavedRepositoriesFromDatabase(userRepository.getUser())
             .doOnSuccess { Timber.d("getSavedRepositories(): #6 saved repositories by ${userRepository.getUser().email} = ${it.size}") }
-            .map { listSavedRepositories -> filterByMap(mapSearchData, listSavedRepositories)
+            .map { listSavedRepositories -> filterByMap(q, listSavedRepositories)
             }
-            .doOnSuccess { Timber.d("getSavedRepositories(): #7 filtered \"$mapSearchData\" saved repositories by ${userRepository.getUser().email} = ${it.size}") }
+            .doOnSuccess { Timber.d("getSavedRepositories(): #7 filtered \"$q\" saved repositories by ${userRepository.getUser().email} = ${it.size}") }
             .doOnError { t -> Timber.e("getSavedRepositories(): ${t.localizedMessage}") }
             .subscribeOn(schedulersProvider.io())
     }
 
-    /** Filter by map data
-     * if value of key=q is empty, return input list without changes*/
+    /** Filter by q
+     * if param q is blank, return input list without changes*/
     private fun filterByMap(
-        mapSearchData: Map<String, String>,
+        q: String,
         listRepositories: List<Repository>
     ): List<Repository> {
-        return if (!mapSearchData["q"].isNullOrBlank()) {
+        return if (q.isNotBlank()) {
             listRepositories
                 .filter { repository ->
                     repository.name.contains(
-                        mapSearchData["q"].toString(),
+                        q,
                         ignoreCase = true
                     )
                 }
