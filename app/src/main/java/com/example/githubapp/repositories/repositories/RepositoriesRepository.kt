@@ -168,7 +168,6 @@ class RepositoriesRepository(
     fun getCurrentRepositoriesFromDatabase(user: User): Observable<List<Repository>> {
         return appDatabase.getRepositoriesDao().getCountUserRepositoryCrossRefListener(user.email)
             .doOnNext { Timber.d("getCurrentRepositoriesFromDatabase(): count UserRepositoryCrossRef by ${user.email} = $it") }
-            .toObservable()
             .switchMap { count ->
                 if (count > 0) {
                     appDatabase.getRepositoriesDao().getUserWithRepositories(user.email)

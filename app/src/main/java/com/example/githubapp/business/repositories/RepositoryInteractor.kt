@@ -116,6 +116,7 @@ class RepositoryInteractor(
             .subscribeOn(schedulersProvider.io())
     }
 
+    /** Get current repositories that come with every change in the database*/
     fun getCurrentRepositoriesFromDatabase(): Observable<List<Repository>> {
         return repositoriesRepository.getCurrentRepositoriesFromDatabase(userRepository.getUser())
             .subscribeOn(schedulersProvider.io())

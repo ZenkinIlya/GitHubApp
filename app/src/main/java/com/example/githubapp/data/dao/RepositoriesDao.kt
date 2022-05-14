@@ -7,6 +7,7 @@ import com.example.githubapp.models.db.user.UserDb
 import com.example.githubapp.models.db.user.UserDbWithRepositoriesDb
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 
 @Dao
@@ -43,7 +44,7 @@ interface RepositoriesDao {
 
     /** Flowable: get count entries in userRepositoryCrossRef which have emailUser*/
     @Query("SELECT COUNT(*) FROM userRepositoryCrossRef WHERE email = :emailUser")
-    fun getCountUserRepositoryCrossRefListener(emailUser: String): Flowable<Int>
+    fun getCountUserRepositoryCrossRefListener(emailUser: String): Observable<Int>
     /** Single: get count entries in userRepositoryCrossRef which have emailUser*/
     @Query("SELECT COUNT(*) FROM userRepositoryCrossRef WHERE email = :emailUser")
     fun getCountUserRepositoryCrossRef(emailUser: String): Single<Int>
