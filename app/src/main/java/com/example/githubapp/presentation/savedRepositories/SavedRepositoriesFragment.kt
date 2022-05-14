@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -31,11 +32,14 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
 
     private lateinit var binding: FragmentSavedRepositoriesBinding
     private lateinit var adapter: RepositoriesAdapter
-    private lateinit var searchViewModel: SearchViewModel
 
     @Inject
     lateinit var presenterProvider: Provider<SavedRepositoriesPresenter>
     private val savedRepositoriesPresenter by moxyPresenter { presenterProvider.get() }
+
+    @Inject
+    lateinit var viewModeProvider: Provider<SearchViewModel.Factory>
+    private val searchViewModel: SearchViewModel by viewModels { viewModeProvider.get() }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -121,7 +125,6 @@ class SavedRepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_saved_r
     }
 
     private fun initSearchObserve() {
-        searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
         searchViewModel.getQuery().observe(viewLifecycleOwner) { q ->
             savedRepositoriesPresenter.onGetFavoriteRepositories(SearchRepositoriesParams(q))
         }

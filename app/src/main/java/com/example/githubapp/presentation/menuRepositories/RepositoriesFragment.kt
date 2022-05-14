@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.githubapp.R
@@ -42,6 +43,10 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
     @Inject
     lateinit var schedulersProvider: SchedulersProvider
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    @Inject
+    lateinit var viewModeProvider: Provider<SearchViewModel.Factory>
+    private val searchViewModel: SearchViewModel by viewModels { viewModeProvider.get() }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -116,7 +121,6 @@ class RepositoriesFragment : MvpAppCompatFragment(R.layout.fragment_repositories
         val searchView = findItem.actionView as SearchView
         searchView.queryHint = "Type here to search"
 
-        val searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
         if (searchViewModel.getQuery().value != null) {
             findItem.expandActionView()
             searchView.clearFocus()

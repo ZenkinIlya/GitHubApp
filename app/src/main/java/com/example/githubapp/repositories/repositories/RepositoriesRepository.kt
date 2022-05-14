@@ -36,9 +36,7 @@ class RepositoriesRepository(
             .blockingGet()
             .map { listRepositoriesFromApi ->
                 listRepositoriesFromApi.map { repository ->
-                    repositoryMapper.fromApiRepository(
-                        repository
-                    )
+                    repositoryMapper.fromApiRepository(repository)
                 }
             }
             .doOnError { t -> Timber.e("getRepositoriesFromGithubApiService(): ${t.localizedMessage}") }

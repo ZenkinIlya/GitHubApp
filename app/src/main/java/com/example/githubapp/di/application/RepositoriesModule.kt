@@ -3,7 +3,9 @@ package com.example.githubapp.di.application
 import android.content.SharedPreferences
 import com.example.githubapp.business.repositories.RepositoryInteractor
 import com.example.githubapp.data.dao.AppDatabase
+import com.example.githubapp.data.network.GetRepositoriesRxRepository
 import com.example.githubapp.data.network.GithubApiService
+import com.example.githubapp.data.network.PageSource
 import com.example.githubapp.models.mappers.RepositoryMapper
 import com.example.githubapp.models.mappers.UserMapper
 import com.example.githubapp.models.mappers.UserWithRepositoryMapper
@@ -51,5 +53,11 @@ class RepositoriesModule {
     @Singleton
     fun provideRepositoriesCache(sharedPreferences: SharedPreferences): CacheRepository {
         return CacheRepository(sharedPreferences)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRepositoriesRxRepository(pagingSource: PageSource.Factory): GetRepositoriesRxRepository {
+        return GetRepositoriesRxRepository.GetRepositoriesRxRepositoryImpl(pagingSource)
     }
 }

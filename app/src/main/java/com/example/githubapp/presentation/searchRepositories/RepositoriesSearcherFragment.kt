@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -32,6 +33,10 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
     private val authorized: Boolean = false
     private lateinit var binding: FragmentRepositoriesSearcherBinding
     private lateinit var adapter: RepositoriesAdapter
+
+    @Inject
+    lateinit var viewModeProvider: Provider<SearchViewModel.Factory>
+    private val searchViewModel: SearchViewModel by viewModels { viewModeProvider.get() }
 
     @Inject
     lateinit var presenterProvider: Provider<RepositoriesSearcherPresenter>
@@ -105,12 +110,11 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
     }
 
     private fun initSearchObserve() {
-        val searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
         searchViewModel.getQuery().observe(viewLifecycleOwner) { q ->
-            if (q.isNotEmpty() && q.isNotBlank()){
-                repositoriesSearchPresenter.onSearchRepositories(SearchRepositoriesParams(q))
-            }else{
-                adapter.repositories = emptyList()
+            if (q.isNotEmpty() && q.isNotBlank()) {
+//                repositoriesSearchPresenter.onSearchRepositories(SearchRepositoriesParams(q))
+            } else {
+//                adapter.repositories = emptyList()
             }
         }
     }
@@ -148,6 +152,10 @@ class RepositoriesSearcherFragment : MvpAppCompatFragment(R.layout.fragment_repo
             }
 
         }, authorized)
+
+        searchViewModel.getRepositories().subscribe {
+            adapter.submitData(lifecycle, it)
+        }
 
         val linearLayoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewRepositoriesSearcher.layoutManager = linearLayoutManager

@@ -3,6 +3,7 @@ package com.example.githubapp.presentation.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -16,7 +17,9 @@ class RepositoriesAdapter(
     private val repositoryClickHandler: RepositoryClickHandler,
     private val authorized: Boolean
 ) :
-    RecyclerView.Adapter<RepositoriesAdapter.RepositoriesViewHolder>(),
+    PagingDataAdapter<Repository, RepositoriesAdapter.RepositoriesViewHolder>(
+        COMPARATOR
+    ),
     View.OnClickListener {
 
     var repositories: List<Repository> = emptyList()
@@ -40,25 +43,17 @@ class RepositoriesAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoriesViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val binding = FragmentRepositoryBinding.inflate(inflater, parent, false)
+        val binding =
+            FragmentRepositoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         binding.root.setOnClickListener(this)
         binding.favoriteImageView.setOnClickListener(this)
 
-        return RepositoriesViewHolder(binding)
+        return RepositoriesViewHolder(binding, authorized)
     }
 
     override fun onBindViewHolder(holder: RepositoriesViewHolder, position: Int) {
-        val repository = repositories[position]
-        with(holder.binding) {
-            holder.itemView.tag = repository
-            favoriteImageView.tag = repository
-
-            RepositoryViewHandler.DefaultRepository(this, repository)
-                .bindView()
-                .bindFavoriteImageView(authorized)
-        }
+        getItem(position)?.let { holder.bind(it) }
     }
 
     override fun getItemCount(): Int = repositories.size
@@ -76,7 +71,7 @@ class RepositoriesAdapter(
         val filterFavoriteRepositories: List<Repository>
         if (value.isNullOrBlank()) {
             repositories = favoriteRepositories
-        }else{
+        } else {
             filterFavoriteRepositories = favoriteRepositories.filter { repository ->
                 repository.name.contains(
                     value.toString(),
@@ -87,8 +82,38 @@ class RepositoriesAdapter(
         }
     }
 
-    class RepositoriesViewHolder(val binding: FragmentRepositoryBinding) :
-        RecyclerView.ViewHolder(binding.root)
+    class RepositoriesViewHolder(
+        private val binding: FragmentRepositoryBinding,
+        private val authorized: Boolean
+    ) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(repository: Repository) {
+            this.itemView.tag = repository
+            with(binding) {
+                favoriteImageView.tag = repository
+
+                RepositoryViewHandler.DefaultRepository(
+                    this,
+                    repository
+                )
+                    .bindView()
+                    .bindFavoriteImageView(authorized)
+            }
+        }
+    }
+
+    companion object {
+        private val COMPARATOR = object : DiffUtil.ItemCallback<Repository>() {
+            override fun areItemsTheSame(oldItem: Repository, newItem: Repository): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Repository, newItem: Repository): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
 }
 
 class RepositoriesDiffUtils(
@@ -112,3 +137,4 @@ class RepositoriesDiffUtils(
     }
 
 }
+

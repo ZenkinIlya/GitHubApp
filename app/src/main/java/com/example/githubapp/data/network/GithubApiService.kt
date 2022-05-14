@@ -15,7 +15,7 @@ interface GithubApiService {
         @Query("q") q: String? = null,
         @Query("sort") sort: String? = null,
         @Query("order") order: String? = null,
-        @Query("per_page") per_page: String? = null,
-        @Query("page") page: String? = null
+        @Query("per_page") per_page: Int? = null,
+        @Query("page") page: Int? = null
     ): Single<RepositoriesResponse>
 }
